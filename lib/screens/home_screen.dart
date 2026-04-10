@@ -199,8 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 32,
+                      childAspectRatio: 0.86,
+                      mainAxisSpacing: 45,
                     ),
                     // On desktop, show 3 columns
                     semanticChildCount: featuredCars.length,

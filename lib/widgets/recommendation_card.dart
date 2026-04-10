@@ -31,7 +31,7 @@ class _RecommendationCardState extends State<RecommendationCard> {
         decoration: BoxDecoration(
           color: _isHovered
               ? AppTheme.surfaceContainerHigh
-              : AppTheme.surfaceContainer,
+              : AppTheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: Colors.transparent,

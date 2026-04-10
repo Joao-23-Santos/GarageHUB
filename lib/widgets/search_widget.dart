@@ -52,6 +52,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       decoration: BoxDecoration(
         color: AppTheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
@@ -69,14 +70,16 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(8),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Grid 2x2 de dropdowns
           GridView.count(
             crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
+            mainAxisSpacing: 0,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.9,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -106,7 +109,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 0),
           // Search Button
           SizedBox(
             width: double.infinity,
@@ -164,7 +167,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             color: AppTheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 2),
         DropdownButtonFormField<String>(
           value: value,
           items: items
