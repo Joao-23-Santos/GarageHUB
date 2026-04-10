@@ -1,122 +1,468 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const GarageHubApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class GarageHubApp extends StatelessWidget {
+  const GarageHubApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'VehicleMarket',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF101010),
+        primaryColor: const Color(0xFFFFC400),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFFFC400),
+          brightness: Brightness.dark,
+        ),
+        textTheme: ThemeData.dark().textTheme.apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const GarageHubHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class GarageHubHomePage extends StatefulWidget {
+  const GarageHubHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<GarageHubHomePage> createState() => _GarageHubHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _GarageHubHomePageState extends State<GarageHubHomePage> {
+  int selectedIndex = 0;
+  String selectedBrand = 'All Brands';
+  String selectedModel = 'Any Model';
+  String selectedYear = '2020 - 2024';
+  String selectedPrice = '\$50k - \$100k';
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  final List<String> brands = ['All Brands', 'Audi', 'BMW', 'Tesla', 'Toyota'];
+  final List<String> models = ['Any Model', 'X5', 'Model S', 'Corolla', 'A4'];
+  final List<String> years = ['2020 - 2024', '2016 - 2019', '2010 - 2015'];
+  final List<String> prices = ['\$50k - \$100k', '\$0k - \$50k', '\$100k+'];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      drawer: _buildDrawer(context),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF0D0D0D), Color(0xFF141414)],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              right: -40,
+              top: 80,
+              child: Opacity(
+                opacity: 0.08,
+                child: Text(
+                  'VM',
+                  style: TextStyle(
+                    fontSize: 220,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellow.shade600,
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  child: Row(
+                    children: [
+                      Builder(
+                        builder: (context) {
+                          return IconButton(
+                            icon: const Icon(
+                              Icons.menu,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'VEHICLEMARKET',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.8,
+                          color: Colors.yellow,
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.person_outline,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 520),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1A1A1A),
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(
+                            color: Colors.yellow.shade700.withOpacity(0.5),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.45),
+                              blurRadius: 28,
+                              offset: const Offset(0, 12),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              'Quick Search',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Find your next car in seconds',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildField(
+                                    'BRAND',
+                                    selectedBrand,
+                                    brands,
+                                    (value) {
+                                      setState(() => selectedBrand = value!);
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 18),
+                                Expanded(
+                                  child: _buildField(
+                                    'MODEL',
+                                    selectedModel,
+                                    models,
+                                    (value) {
+                                      setState(() => selectedModel = value!);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 18),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildField(
+                                    'YEAR',
+                                    selectedYear,
+                                    years,
+                                    (value) {
+                                      setState(() => selectedYear = value!);
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 18),
+                                Expanded(
+                                  child: _buildField(
+                                    'PRICE RANGE',
+                                    selectedPrice,
+                                    prices,
+                                    (value) {
+                                      setState(() => selectedPrice = value!);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 28),
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFFFC400),
+                                foregroundColor: Colors.black,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 18,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              onPressed: () {},
+                              icon: const Icon(Icons.search, size: 22),
+                              label: const Text('SEARCH INVENTORY'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: BottomAppBar(
+        elevation: 20,
+        color: const Color(0xFF0F0F0F),
+        shape: const CircularNotchedRectangle(),
+        child: Container(
+          height: 80,
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildNavItem(Icons.home, 'HOME', 0),
+              _buildNavItem(Icons.search, 'SEARCH', 1),
+              _buildNavItem(Icons.add, 'SELL', 2),
+              _buildNavItem(Icons.message, 'MESSAGES', 3),
+              _buildNavItem(Icons.favorite_border, 'FAVORITES', 4),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      height: 80,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F0F0F),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.35),
+            blurRadius: 28,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildNavItem(Icons.home, 'HOME', 0),
+            _buildNavItem(Icons.search, 'SEARCH', 1),
+            _buildNavItem(Icons.add, 'SELL', 2),
+            _buildNavItem(Icons.message, 'MESSAGES', 3),
+            _buildNavItem(Icons.favorite_border, 'FAVORITES', 4),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, int index) {
+    final bool active = selectedIndex == index;
+    return GestureDetector(
+      onTap: () => setState(() => selectedIndex = index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: active
+            ? BoxDecoration(
+                color: const Color(0xFFFFC400),
+                borderRadius: BorderRadius.circular(16),
+              )
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: active ? Colors.black : Colors.white70, size: 22),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: active ? Colors.black : Colors.white70,
+                fontSize: 10,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField(
+    String label,
+    String currentValue,
+    List<String> options,
+    ValueChanged<String?> onChanged,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+            letterSpacing: 1.5,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: const Color(0xFF121212),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: currentValue,
+                isExpanded: true,
+                dropdownColor: const Color(0xFF1B1B1B),
+                icon: const Icon(Icons.arrow_drop_down, color: Colors.white70),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+                items: options.map((value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: onChanged,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Drawer _buildDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: const Color(0xFF111111),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.yellow.shade700,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.directions_car,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  const Text(
+                    'Marketplace',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(color: Colors.white12, thickness: 1),
+            _buildDrawerItem(Icons.home_filled, 'Home'),
+            _buildDrawerItem(Icons.search, 'Search'),
+            _buildDrawerItem(Icons.star_border, 'Favorites'),
+            _buildDrawerItem(Icons.settings_outlined, 'Settings'),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow.shade700,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () {},
+                child: const Text('Contact Sales'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String label) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white70),
+      title: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      onTap: () {},
     );
   }
 }
