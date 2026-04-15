@@ -7,6 +7,7 @@ import '../widgets/car_card.dart';
 import '../widgets/recommendation_card.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import 'search_filters_screen.dart';
+import 'search_results_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -137,8 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               child: SearchWidget(
                 onSearch: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Searching inventory...')),
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SearchResultsScreen(),
+                    ),
                   );
                 },
               ),

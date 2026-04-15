@@ -832,7 +832,8 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: GestureDetector(
         onTap: () {
-          // Handle show results
+          // Handle show results, transfer selected filters to results screen
+          
         },
         child: Container(
           decoration: BoxDecoration(
