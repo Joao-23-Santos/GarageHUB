@@ -6,6 +6,7 @@ import '../widgets/search_widget.dart';
 import '../widgets/car_card.dart';
 import '../widgets/recommendation_card.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import 'search_filters_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -186,8 +187,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           size: 24,
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Filters opened')),
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SearchFiltersScreen(),
+                            ),
                           );
                         },
                       ),
@@ -287,11 +290,20 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedBottomNavIndex,
         onTap: (index) {
-          setState(() => _selectedBottomNavIndex = index);
-          final navLabels = ['Home', 'Search', 'Sell', 'Messages', 'Favorites'];
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${navLabels[index]} clicked')),
-          );
+          if (index == 1) {
+            // Search tab - navigate to search filters
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const SearchFiltersScreen(),
+              ),
+            );
+          } else {
+            setState(() => _selectedBottomNavIndex = index);
+            final navLabels = ['Home', 'Search', 'Sell', 'Messages', 'Favorites'];
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${navLabels[index]} clicked')),
+            );
+          }
         },
       ),
     );
