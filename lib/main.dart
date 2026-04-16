@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
 import 'screens/home_screen.dart';
+import 'screens/search_filters_screen.dart';
+import 'screens/search_results_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +17,12 @@ class MyApp extends StatelessWidget {
       title: 'VehicleMarket',
       theme: AppTheme.darkTheme,
       home: const HomeScreen(),
+      routes: {
+        '/search_results': (context) => const SearchResultsScreen(
+          filters: {}, // Pass empty filters for now
+        ),
+        '/search_filters': (context) => const SearchFiltersScreen(),
+      },
     );
   }
 }

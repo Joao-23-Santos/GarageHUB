@@ -35,13 +35,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             width: 1,
           ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, -10),
-          ),
-        ],
       ),
       child: SafeArea(
         top: false,
