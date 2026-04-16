@@ -70,22 +70,14 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         ],
       ),
-<<<<<<< HEAD
-      padding: const EdgeInsets.all(16),
-=======
       padding: const EdgeInsets.all(8),
->>>>>>> 5f0c0bb0c968f99fb7fd7fb29b91ab7592ad55fe
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Grid 2x2 de dropdowns
           GridView.count(
             crossAxisCount: 2,
-<<<<<<< HEAD
-            mainAxisSpacing: 8,
-=======
             mainAxisSpacing: 0,
->>>>>>> 5f0c0bb0c968f99fb7fd7fb29b91ab7592ad55fe
             crossAxisSpacing: 8,
             childAspectRatio: 1.9,
             shrinkWrap: true,
@@ -117,11 +109,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               ),
             ],
           ),
-<<<<<<< HEAD
-          const SizedBox(height: 12),
-=======
           const SizedBox(height: 0),
->>>>>>> 5f0c0bb0c968f99fb7fd7fb29b91ab7592ad55fe
           // Search Button
           SizedBox(
             width: double.infinity,
@@ -179,11 +167,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             color: AppTheme.onSurfaceVariant,
           ),
         ),
-<<<<<<< HEAD
-        const SizedBox(height: 4),
-=======
         const SizedBox(height: 2),
->>>>>>> 5f0c0bb0c968f99fb7fd7fb29b91ab7592ad55fe
         DropdownButtonFormField<String>(
           value: value,
           items: items

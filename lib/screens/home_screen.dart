@@ -6,8 +6,10 @@ import '../widgets/search_widget.dart';
 import '../widgets/car_card.dart';
 import '../widgets/recommendation_card.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import '../data/sample_listing_data.dart';
 import 'search_filters_screen.dart';
 import 'search_results_screen.dart';
+import 'listing_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -256,13 +258,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       return CarCard(
                         car: featuredCars[index],
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Exploring ${featuredCars[index].fullName}',
+                          // Navigate to listing details for first car (Porsche)
+                          // with complete sample data
+                          if (index == 0) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ListingDetailsScreen(
+                                  car: porsche911GT3RSListing,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Exploring ${featuredCars[index].fullName}',
+                                ),
+                              ),
+                            );
+                          }
                         },
                       );
                     },

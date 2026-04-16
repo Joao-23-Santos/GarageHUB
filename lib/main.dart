@@ -3,6 +3,7 @@ import 'theme/app_theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_filters_screen.dart';
 import 'screens/search_results_screen.dart';
+import 'screens/listing_details_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,13 @@ class MyApp extends StatelessWidget {
           filters: {}, // Pass empty filters for now
         ),
         '/search_filters': (context) => const SearchFiltersScreen(),
+        '/listing_details': (context) {
+          final car = ModalRoute.of(context)?.settings.arguments;
+          if (car != null) {
+            return ListingDetailsScreen(car: car as dynamic);
+          }
+          return const HomeScreen();
+        },
       },
     );
   }
