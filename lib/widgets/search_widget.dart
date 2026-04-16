@@ -69,14 +69,15 @@ class _SearchWidgetState extends State<SearchWidget> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           // Grid 2x2 de dropdowns
           GridView.count(
             crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.9,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -106,7 +107,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
           // Search Button
           SizedBox(
             width: double.infinity,
@@ -115,7 +116,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryContainer,
                 foregroundColor: AppTheme.onPrimaryContainer,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(32),
                 ),
@@ -125,15 +126,15 @@ class _SearchWidgetState extends State<SearchWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.search, size: 20),
-                  const SizedBox(width: 8),
+                  const Icon(Icons.search, size: 16),
+                  const SizedBox(width: 6),
                   Text(
                     'Search Inventory'.toUpperCase(),
                     style: const TextStyle(
                       fontFamily: 'Space Grotesk',
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -164,7 +165,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             color: AppTheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         DropdownButtonFormField<String>(
           value: value,
           items: items
@@ -177,8 +178,8 @@ class _SearchWidgetState extends State<SearchWidget> {
           decoration: InputDecoration(
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
+              horizontal: 8,
+              vertical: 8,
             ),
           ),
           style: const TextStyle(
