@@ -18,7 +18,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       home: const HomeScreen(),
       routes: {
-        '/search_results': (context) => const SearchResultsScreen(),
+        '/search_results': (context) => const SearchResultsScreen(
+          filters: {}, // Pass empty filters for now
+        ),
         '/search_filters': (context) => const SearchFiltersScreen(),
       },
     );

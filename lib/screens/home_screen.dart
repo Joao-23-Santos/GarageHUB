@@ -19,6 +19,40 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedBottomNavIndex = 0;
 
+  // Search filter state
+  String _selectedBrand = 'All Brands';
+  String _selectedModel = 'Any Model';
+  String _selectedYearRange = '2020 - 2024';
+  String _selectedPriceRange = '\$50k - \$100k';
+
+  final List<String> _brandOptions = [
+    'All Brands',
+    'Tesla',
+    'Porsche',
+    'BMW',
+    'Mercedes-Benz',
+  ];
+
+  final List<String> _modelOptions = [
+    'Any Model',
+    'Model S',
+    '911',
+    'M4',
+    'G 63',
+  ];
+
+  final List<String> _yearRanges = [
+    '2020 - 2024',
+    '2018 - 2022',
+    '2015 - 2019',
+  ];
+
+  final List<String> _priceRanges = [
+    '\$50k - \$100k',
+    '\$25k - \$50k',
+    '\$100k+',
+  ];
+
   final List<Car> featuredCars = [
     Car(
       id: '1',
@@ -30,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
       priceLabel: 'MSRP New',
       imageUrl:
           'https://lh3.googleusercontent.com/aida-public/AB6AXuCvdSEHW6-6X7AJQhstMyI-nz8YIOF7FPefJVJEZaNVf98I1Xa6LiArkBhz1wpB0_9KpAgpQVK_3aGtpkOPTYjjHXRRWmukuUHG1JpGA8El6pgkuGfwa4uYHusJoZIlBd_9rs5lIfa163-3l3qInN4l3HNfh5ZTMfKXSA_EerQ3VarnWvBT5XpoQGAZwzLUqPJZK_QhTBGgOEapePgc5bi_rn_YF7c2gQPgpZTD-4HDgDxouIs5wlv43_9ZV0MZelvuEjsLhegfrZk',
-      imageAlt: 'sleek black porsche 911 parked on modern concrete architecture',
+      imageAlt:
+          'sleek black porsche 911 parked on modern concrete architecture',
       mileage: 1250,
       mileageLabel: '1,250 Mi',
       fuelType: 'Petrol',
@@ -48,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
       priceLabel: 'Fixed Price',
       imageUrl:
           'https://lh3.googleusercontent.com/aida-public/AB6AXuB9faPs-_ZC7BOA_9nPUuPCXvSTyM0QJDh1Z3Zolfu0wF8aEiHuuadZX8KKgA5E_s6mG8AowcK61IbA3WnMrFFI_hpvW9yyEPC0Nt33LL-zk1QFsZz3aC1fP8GGudzll2sfLPsoGoZXMBFhP-_eWSLUuOTDpHFCYUI0oWcAnjG39N78sTidNpeSJrSsa_Qe66P5pYGUHl6cxk7GgWy3NxAhh2R-izX1a0ZVYpk90R9MN_o2eIjkrZ-X0MQ0T9s7a5y7HW1kdGgfm1Y',
-      imageAlt: 'white tesla model s parked in front of futuristic charging station',
+      imageAlt:
+          'white tesla model s parked in front of futuristic charging station',
       mileage: 0,
       mileageLabel: '396 Mi Range',
       fuelType: 'Electric',
@@ -85,7 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
           'One of the last naturally aspirated V10 icons. Immaculate service history, performance exhaust, and carbon fiber appearance package.',
       imageUrl:
           'https://lh3.googleusercontent.com/aida-public/AB6AXuBpR45Xz1hRt_hvdgBBXPAFpcYN_tb-hVr79WOfeucJeh_p3szIjPcwk0Z5FKQ4vJAaZzfhHTWBvVGe5cauqsXQTe8O-FTYdv2YMbKfCnu0L79XBl9f56far6fsrPTIZPV2eMOuugqMtFYYXPGptgBoZk7l2b5SIEnTvZqg16bDkjH9mlCkvAgucDi3Jex0H4BiQ-IEr7tcn5dmHkm-VxdWdV03mjyJazDph0TtCwmTh-Z1VIksvJyaGHCF56MW4Y7ff8Lc0q5UrlM',
-      imageAlt: 'vibrant red luxury sports car profile view with aggressive lines',
+      imageAlt:
+          'vibrant red luxury sports car profile view with aggressive lines',
       specs: {
         '0-60 MPH': '3.2 Seconds',
         'Top Speed': '205 MPH',
@@ -102,12 +139,9 @@ class _HomeScreenState extends State<HomeScreen> {
           'The pinnacle of off-road luxury. Hand-built AMG engine, Magno Night Black finish, and bespoke Diamond Stitching interior.',
       imageUrl:
           'https://lh3.googleusercontent.com/aida-public/AB6AXuD4iVuqC-m5ObG2wYW_RFumGzAnpUFhGhcuhhFSFVZXmiNFP73XvJC00sYbgkq7shDaUD9iPvHIZQaqdsdCMwVPxaj0Zm5iog19tNUymZTwFAVSrTEV4XnXm_0a94EXo2Kds3XKsw8v8bDTpooY9-AiJ6YSDcn_UubdoiFOzGR7YmNPURFmcagG2Le6a0x8larpCs9MQ5xUY5qWyHWMOG8UAb6khENLXJU_0KUpPQFRJKuaRanx14PpdpqGATlCh5VTiwsfKs0W7SM',
-      imageAlt: 'modern luxury suv in dark metallic grey driving on rainy street',
-      specs: {
-        'Power': '577 HP',
-        'Torque': '627 lb-ft',
-        'Drive': 'AWD',
-      },
+      imageAlt:
+          'modern luxury suv in dark metallic grey driving on rainy street',
+      specs: {'Power': '577 HP', 'Torque': '627 lb-ft', 'Drive': 'AWD'},
     ),
   ];
 
@@ -119,14 +153,14 @@ class _HomeScreenState extends State<HomeScreen> {
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: TopAppBar(
           onMenuPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Menu opened')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Menu opened')));
           },
           onProfilePressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Profile opened')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Profile opened')));
           },
         ),
       ),
@@ -140,7 +174,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 onSearch: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const SearchResultsScreen(),
+                      builder: (context) => SearchResultsScreen(
+                        filters: {
+                          'brand': _selectedBrand,
+                          'model': _selectedModel,
+                          'yearRange': _selectedYearRange,
+                          'priceRange': _selectedPriceRange,
+                        },
+                      ),
                     ),
                   );
                 },
@@ -173,13 +214,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 8),
                           Text(
                             'Featured Listings'.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineLarge
+                            style: Theme.of(context).textTheme.headlineLarge
                                 ?.copyWith(
-                              fontSize: 32,
-                              color: AppTheme.onSurface,
-                            ),
+                                  fontSize: 32,
+                                  color: AppTheme.onSurface,
+                                ),
                           ),
                         ],
                       ),
@@ -203,11 +242,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Cars Grid
                   GridView.builder(
                     gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      childAspectRatio: 0.86,
-                      mainAxisSpacing: 45,
-                    ),
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 1,
+                          childAspectRatio: 0.86,
+                          mainAxisSpacing: 45,
+                        ),
                     // On desktop, show 3 columns
                     semanticChildCount: featuredCars.length,
                     shrinkWrap: true,
@@ -236,10 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               width: double.infinity,
               color: AppTheme.surfaceContainerLowest,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 48,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -267,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: recommendedCars.length,
                     separatorBuilder: (context, index) =>
-                    const SizedBox(height: 24),
+                        const SizedBox(height: 24),
                     itemBuilder: (context, index) {
                       return RecommendationCard(
                         car: recommendedCars[index],
@@ -302,7 +338,13 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else {
             setState(() => _selectedBottomNavIndex = index);
-            final navLabels = ['Home', 'Search', 'Sell', 'Messages', 'Favorites'];
+            final navLabels = [
+              'Home',
+              'Search',
+              'Sell',
+              'Messages',
+              'Favorites',
+            ];
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('${navLabels[index]} clicked')),
             );

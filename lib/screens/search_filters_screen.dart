@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:garagehub/screens/home_screen.dart';
+import 'package:garagehub/screens/search_results_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
@@ -11,7 +13,7 @@ class SearchFiltersScreen extends StatefulWidget {
 
 class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
   int _selectedBottomNavIndex = 1;
-  
+
   // Filter states
   String _selectedCategory = 'car';
   String? _selectedBrand;
@@ -26,19 +28,54 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
     'Heated Leather Seats': false,
     'Adaptive Cruise Control': true,
   };
-  TextEditingController _minYearController = TextEditingController(text: '2020');
-  TextEditingController _maxYearController = TextEditingController(text: '2024');
-  
+  TextEditingController _minYearController = TextEditingController(
+    text: '2020',
+  );
+  TextEditingController _maxYearController = TextEditingController(
+    text: '2024',
+  );
+
   final List<Map<String, dynamic>> categories = [
-    {'id': 'car', 'label': 'Carro', 'icon': Icons.directions_car, 'filled': false},
-    {'id': 'motorcycle', 'label': 'Mota', 'icon': Icons.two_wheeler, 'filled': false},
-    {'id': 'rv', 'label': 'Auto-caravana', 'icon': Icons.rv_hookup, 'filled': false},
-    {'id': 'boat', 'label': 'Barco', 'icon': Icons.directions_boat, 'filled': false},
-    {'id': 'truck', 'label': 'Pesado', 'icon': Icons.local_shipping, 'filled': false},
+    {
+      'id': 'car',
+      'label': 'Carro',
+      'icon': Icons.directions_car,
+      'filled': false,
+    },
+    {
+      'id': 'motorcycle',
+      'label': 'Mota',
+      'icon': Icons.two_wheeler,
+      'filled': false,
+    },
+    {
+      'id': 'rv',
+      'label': 'Auto-caravana',
+      'icon': Icons.rv_hookup,
+      'filled': false,
+    },
+    {
+      'id': 'boat',
+      'label': 'Barco',
+      'icon': Icons.directions_boat,
+      'filled': false,
+    },
+    {
+      'id': 'truck',
+      'label': 'Pesado',
+      'icon': Icons.local_shipping,
+      'filled': false,
+    },
   ];
-  
-  final List<String> brands = ['Any Brand', 'Tesla', 'Porsche', 'BMW', 'Mercedes-Benz'];
-  
+
+  final List<String> brands = [
+    'Any Brand',
+    'Tesla',
+    'Porsche',
+    'BMW',
+    'Mercedes-Benz',
+  ];
+
   final List<Map<String, dynamic>> bodyTypes = [
     {'id': 'suv', 'label': 'SUV', 'icon': Icons.directions_car_filled},
     {'id': 'coupe', 'label': 'Coupe', 'icon': Icons.sports_motorsports},
@@ -46,10 +83,10 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
     {'id': 'wagon', 'label': 'State', 'icon': Icons.airport_shuttle},
     {'id': 'cabrio', 'label': 'Cabrio', 'icon': Icons.set_meal},
   ];
-  
+
   final List<String> fuelTypes = ['Electric', 'Petrol', 'Hybrid'];
   final List<String> transmissions = ['Manual', 'Automatic'];
-  
+
   void _resetAllFilters() {
     setState(() {
       _selectedCategory = 'car';
@@ -69,7 +106,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       _maxYearController.text = '2024';
     });
   }
-  
+
   @override
   void dispose() {
     _minYearController.dispose();
@@ -90,37 +127,37 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
               children: [
                 // Horizontal Category Selection
                 _buildCategoryScroll(),
-                
+
                 // Brand & Model Selection
                 _buildBrandModelSection(),
-                
+
                 // Body Type Section
                 _buildBodyTypeSection(),
-                
+
                 // Range Sliders
                 _buildRangeSliders(),
-                
+
                 // Fuel Type & Transmission
                 _buildFuelTransmissionSection(),
-                
+
                 // High-End Features
                 _buildFeaturesSection(),
-                
+
                 // Year Range
                 _buildYearRangeSection(),
-                
+
                 // More Filters
                 _buildMoreFiltersLink(),
-                
+
                 // Spacer for fixed footer
-                const SizedBox(height: 160),
+                const SizedBox(height: 100),
               ],
             ),
           ),
-          
+
           // Sticky Action Footer
           Positioned(
-            bottom: 80,
+            bottom: 17,
             left: 0,
             right: 0,
             child: _buildActionFooter(),
@@ -130,6 +167,13 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedBottomNavIndex,
         onTap: (index) {
+          if (index == 0) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+          }
           setState(() {
             _selectedBottomNavIndex = index;
           });
@@ -137,7 +181,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: AppTheme.surface,
@@ -171,7 +215,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ],
     );
   }
-  
+
   Widget _buildCategoryScroll() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -188,7 +232,10 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                 });
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppTheme.secondaryContainer
@@ -196,9 +243,9 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: isSelected
                       ? Border.all(
-                    color: AppTheme.primaryContainer.withOpacity(0.2),
-                    width: 1,
-                  )
+                          color: AppTheme.primaryContainer.withOpacity(0.2),
+                          width: 1,
+                        )
                       : null,
                 ),
                 child: Column(
@@ -233,7 +280,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildBrandModelSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -320,7 +367,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildBodyTypeSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -358,11 +405,11 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                     borderRadius: BorderRadius.circular(12),
                     border: isSelected
                         ? Border(
-                          bottom: BorderSide(
-                            color: AppTheme.primaryContainer,
-                            width: 2,
-                          ),
-                        )
+                            bottom: BorderSide(
+                              color: AppTheme.primaryContainer,
+                              width: 2,
+                            ),
+                          )
                         : null,
                   ),
                   child: Column(
@@ -395,16 +442,16 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildRangeSliders() {
     String formatPrice(double value) {
       return '\$${(value / 1000).toStringAsFixed(0)}k';
     }
-    
+
     String formatMileage(double value) {
       return 'Under ${(value / 1000).toStringAsFixed(0)}k mi';
     }
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       padding: const EdgeInsets.all(32),
@@ -499,7 +546,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildFuelTransmissionSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -579,15 +626,19 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: _selectedTransmission == transmissions[0].toLowerCase()
+                      color:
+                          _selectedTransmission ==
+                              transmissions[0].toLowerCase()
                           ? AppTheme.secondaryContainer
                           : AppTheme.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(12),
-                      border: _selectedTransmission == transmissions[0].toLowerCase()
+                      border:
+                          _selectedTransmission ==
+                              transmissions[0].toLowerCase()
                           ? Border.all(
-                        color: AppTheme.primaryContainer,
-                        width: 1,
-                      )
+                              color: AppTheme.primaryContainer,
+                              width: 1,
+                            )
                           : null,
                     ),
                     child: Center(
@@ -598,7 +649,9 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
-                          color: _selectedTransmission == transmissions[0].toLowerCase()
+                          color:
+                              _selectedTransmission ==
+                                  transmissions[0].toLowerCase()
                               ? AppTheme.primaryContainer
                               : AppTheme.onSurfaceVariant,
                         ),
@@ -618,15 +671,19 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      color: _selectedTransmission == transmissions[1].toLowerCase()
+                      color:
+                          _selectedTransmission ==
+                              transmissions[1].toLowerCase()
                           ? AppTheme.secondaryContainer
                           : AppTheme.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(12),
-                      border: _selectedTransmission == transmissions[1].toLowerCase()
+                      border:
+                          _selectedTransmission ==
+                              transmissions[1].toLowerCase()
                           ? Border.all(
-                        color: AppTheme.primaryContainer,
-                        width: 1,
-                      )
+                              color: AppTheme.primaryContainer,
+                              width: 1,
+                            )
                           : null,
                     ),
                     child: Center(
@@ -637,7 +694,9 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.5,
-                          color: _selectedTransmission == transmissions[1].toLowerCase()
+                          color:
+                              _selectedTransmission ==
+                                  transmissions[1].toLowerCase()
                               ? AppTheme.primaryContainer
                               : AppTheme.onSurfaceVariant,
                         ),
@@ -652,7 +711,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildFeaturesSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -673,7 +732,10 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceContainerLowest,
                     borderRadius: BorderRadius.circular(12),
@@ -715,7 +777,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildYearRangeSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -756,11 +818,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                 ),
               ),
               const SizedBox(width: 16),
-              Container(
-                width: 4,
-                height: 2,
-                color: AppTheme.onSurfaceVariant,
-              ),
+              Container(width: 4, height: 2, color: AppTheme.onSurfaceVariant),
               const SizedBox(width: 16),
               Expanded(
                 child: Container(
@@ -790,7 +848,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildMoreFiltersLink() {
     return Center(
       child: TextButton(
@@ -815,7 +873,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       ),
     );
   }
-  
+
   Widget _buildActionFooter() {
     return Container(
       decoration: BoxDecoration(
@@ -833,7 +891,27 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       child: GestureDetector(
         onTap: () {
           // Handle show results, transfer selected filters to results screen
-          
+          final filters = {
+            'category': _selectedCategory,
+            'brand': _selectedBrand,
+            'model': _selectedModel,
+            'bodyType': _selectedBodyType,
+            'priceRange': _priceRange,
+            'maxMileage': _maxMileage,
+            'fuelType': _selectedFuelType,
+            'transmission': _selectedTransmission,
+            'features': _selectedFeatures,
+            'minYear': _minYearController.text,
+            'maxYear': _maxYearController.text,
+          };
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SearchResultsScreen(
+                totalResults: 242, // or calculate based on filters
+                filters: filters,
+              ),
+            ),
+          );
         },
         child: Container(
           decoration: BoxDecoration(
@@ -842,12 +920,12 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
             boxShadow: [
               BoxShadow(
                 color: AppTheme.primaryContainer.withOpacity(0.3),
-                blurRadius: 40,
-                offset: const Offset(0, 20),
+                blurRadius: 20,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -859,7 +937,6 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                   letterSpacing: 1.0,
                 ),
               ),
-              const SizedBox(width: 12),
               const Icon(
                 Icons.chevron_right,
                 color: AppTheme.onPrimaryContainer,

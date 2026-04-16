@@ -6,10 +6,12 @@ import '../widgets/custom_bottom_nav_bar.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final int totalResults;
+  final Map<String, dynamic> filters;
   
   const SearchResultsScreen({
     Key? key,
     this.totalResults = 2482,
+    required this.filters,
   }) : super(key: key);
 
   @override
