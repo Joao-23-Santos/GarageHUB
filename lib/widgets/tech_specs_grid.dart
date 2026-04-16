@@ -87,7 +87,7 @@ class QuickSpecsBar extends StatelessWidget {
       crossAxisCount: 3,
       crossAxisSpacing: 0,
       mainAxisSpacing: 0,
-      childAspectRatio: 1.2,
+      childAspectRatio: 1.0,
       children: [
         Container(
           decoration: BoxDecoration(

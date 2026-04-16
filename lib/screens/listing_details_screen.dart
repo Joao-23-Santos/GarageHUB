@@ -73,7 +73,7 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
               onPressed: () => Navigator.pop(context),
             ),
             title: Text(
-              'Vehicle Market',
+              'GarageHUB',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 color: AppTheme.primaryContainer,
                 fontStyle: FontStyle.italic,
@@ -102,7 +102,7 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
             child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: isMobile ? 16 : 48,
-                vertical: 32,
+                vertical: 20,
               ),
               child: isMobile
                   ? _buildMobileLayout(context)
@@ -116,7 +116,7 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: isMobile ? 16 : 48,
-                  vertical: 32,
+                  vertical: 20,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,13 +145,14 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
                     ),
                     const SizedBox(height: 24),
                     GridView.builder(
+                      padding: const EdgeInsets.only(bottom: 8),
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: isMobile ? 1 : 3,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 1.2,
+                        crossAxisSpacing: 0,
+                        mainAxisSpacing: 45,
+                        childAspectRatio: 0.83,
                       ),
                       itemCount: widget.car.similarCars!.length,
                       itemBuilder: (context, index) {
@@ -170,14 +171,41 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
                         );
                       },
                     ),
+                    const SizedBox(height: 24),
+                    Center(
+                      child: Material(
+                        color: AppTheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(24),
+                        child: InkWell(
+                          onTap: () {
+                            // Show more recommendations
+                          },
+                          borderRadius: BorderRadius.circular(24),
+                          splashColor: AppTheme.primaryContainer.withOpacity(0.2),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                            child: Text(
+                              'SHOW MORE',
+                              style: const TextStyle(
+                                fontFamily: 'Space Grotesk',
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.onSurface,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-
+            
           // Bottom spacing
           SliverToBoxAdapter(
-            child: SizedBox(height: isMobile ? 100 : 60),
+            child: SizedBox(height: 100),
           ),
         ],
       ),
@@ -227,6 +255,7 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
                   ),
                 ),
                 child: Icon(
+
                   _isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: _isFavorite
                       ? AppTheme.primaryContainer
@@ -537,3 +566,5 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
     );
   }
 }
+
+
