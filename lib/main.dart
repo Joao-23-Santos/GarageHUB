@@ -4,6 +4,9 @@ import 'screens/home_screen.dart';
 import 'screens/search_filters_screen.dart';
 import 'screens/search_results_screen.dart';
 import 'screens/listing_details_screen.dart';
+import 'screens/saved_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/create_listing_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +22,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       home: const HomeScreen(),
       routes: {
+        '/create_listing': (context) => const CreateListingScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/saved': (context) => const SavedScreen(),
         '/search_results': (context) => const SearchResultsScreen(
           filters: {}, // Pass empty filters for now
         ),

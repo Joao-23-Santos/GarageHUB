@@ -30,7 +30,7 @@ class TopAppBar extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    'VehicleMarket',
+                    'GARAGEHUB',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: AppTheme.primaryContainer,
                       fontStyle: FontStyle.italic,

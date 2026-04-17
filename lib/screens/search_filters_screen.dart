@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:garagehub/screens/create_listing_screen.dart';
 import 'package:garagehub/screens/home_screen.dart';
+import 'package:garagehub/screens/saved_screen.dart';
 import 'package:garagehub/screens/search_results_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
@@ -174,6 +176,21 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
               ),
             );
           }
+          if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const CreateListingScreen(),
+              ),
+            );
+          }
+          if (index == 4) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const SavedScreen(),
+              ),
+            );
+          }
+
           setState(() {
             _selectedBottomNavIndex = index;
           });

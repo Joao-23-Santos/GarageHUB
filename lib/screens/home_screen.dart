@@ -10,6 +10,9 @@ import '../data/sample_listing_data.dart';
 import 'search_filters_screen.dart';
 import 'search_results_screen.dart';
 import 'listing_details_screen.dart';
+import 'saved_screen.dart';
+import 'profile_screen.dart';
+import 'create_listing_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -160,9 +163,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ).showSnackBar(const SnackBar(content: Text('Menu opened')));
           },
           onProfilePressed: () {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Profile opened')));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ProfileScreen(),
+              ),
+            );
           },
         ),
       ),
@@ -349,6 +354,20 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const SearchFiltersScreen(),
+              ),
+            );
+          } else if (index == 2) {
+            // Sell tab - navigate to create listing
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const CreateListingScreen(),
+              ),
+            );
+          } else if (index == 4) {
+            // Favorites tab - navigate to saved screen
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const SavedScreen(),
               ),
             );
           } else {
