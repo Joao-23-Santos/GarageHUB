@@ -52,11 +52,7 @@ class _SavedScreenState extends State<SavedScreen> {
 
   // Sample saved searches data
   final List<Map<String, dynamic>> savedSearches = [
-    {
-      'title': 'Performance Coupes',
-      'listingCount': 48,
-      'newListingsToday': 5,
-    },
+    {'title': 'Performance Coupes', 'listingCount': 48, 'newListingsToday': 5},
     {
       'title': 'Daily SUVs under \$50k',
       'listingCount': 124,
@@ -103,10 +99,22 @@ class _SavedScreenState extends State<SavedScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: 4,
         onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/');
-          } else if (index == 1) {
-            Navigator.pushReplacementNamed(context, '/search_filters');
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/search_filters');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/create_listing');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/messages');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/profile');
+              break;
           }
         },
       ),
@@ -131,27 +139,23 @@ class _SavedScreenState extends State<SavedScreen> {
               if (_selectedTabIndex == 0)
                 // Vehicles Tab
                 Column(
-                  children: List.generate(
-                    savedVehicles.length,
-                    (index) {
-                      final vehicle = savedVehicles[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 24),
-                        child: SavedVehicleCard(
-                          imageUrl: vehicle['imageUrl'],
-                          imageAlt: vehicle['title'],
-                          badge: vehicle['badge'],
-                          title: vehicle['title'],
-                          price: vehicle['price'],
-                          mileage: vehicle['mileage'],
-                          transmission: vehicle['transmission'],
-                          driveType: vehicle['driveType'],
-                          onFavoritePressed: () =>
-                              _handleFavoriteVehicle(index),
-                        ),
-                      );
-                    },
-                  ),
+                  children: List.generate(savedVehicles.length, (index) {
+                    final vehicle = savedVehicles[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: SavedVehicleCard(
+                        imageUrl: vehicle['imageUrl'],
+                        imageAlt: vehicle['title'],
+                        badge: vehicle['badge'],
+                        title: vehicle['title'],
+                        price: vehicle['price'],
+                        mileage: vehicle['mileage'],
+                        transmission: vehicle['transmission'],
+                        driveType: vehicle['driveType'],
+                        onFavoritePressed: () => _handleFavoriteVehicle(index),
+                      ),
+                    );
+                  }),
                 )
               else
                 // Searches Tab
@@ -172,21 +176,18 @@ class _SavedScreenState extends State<SavedScreen> {
                       ),
                     ),
                     Column(
-                      children: List.generate(
-                        savedSearches.length,
-                        (index) {
-                          final search = savedSearches[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: SavedSearchItem(
-                              title: search['title'],
-                              listingCount: search['listingCount'],
-                              newListingsToday: search['newListingsToday'],
-                              onDelete: () => _handleDeleteSearch(index),
-                            ),
-                          );
-                        },
-                      ),
+                      children: List.generate(savedSearches.length, (index) {
+                        final search = savedSearches[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: SavedSearchItem(
+                            title: search['title'],
+                            listingCount: search['listingCount'],
+                            newListingsToday: search['newListingsToday'],
+                            onDelete: () => _handleDeleteSearch(index),
+                          ),
+                        );
+                      }),
                     ),
                   ],
                 ),

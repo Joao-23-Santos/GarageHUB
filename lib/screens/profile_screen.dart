@@ -91,14 +91,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onSettingsPressed: _handleSettings,
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: -1, // No item selected for profile
+        selectedIndex: 4, // No item selected for profile
         onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/');
-          } else if (index == 1) {
-            Navigator.pushReplacementNamed(context, '/search_filters');
-          } else if (index == 4) {
-            Navigator.pushReplacementNamed(context, '/saved');
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/search_filters');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/create_listing');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/messages');
+              break;
           }
         },
       ),

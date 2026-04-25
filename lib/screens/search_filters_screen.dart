@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:garagehub/screens/create_listing_screen.dart';
-import 'package:garagehub/screens/home_screen.dart';
-import 'package:garagehub/screens/saved_screen.dart';
 import 'package:garagehub/screens/search_results_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
@@ -169,26 +166,19 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: _selectedBottomNavIndex,
         onTap: (index) {
-          if (index == 0) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ),
-            );
-          }
-          if (index == 2) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const CreateListingScreen(),
-              ),
-            );
-          }
-          if (index == 4) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SavedScreen(),
-              ),
-            );
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/create_listing');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/messages');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/profile');
+              break;
           }
 
           setState(() {

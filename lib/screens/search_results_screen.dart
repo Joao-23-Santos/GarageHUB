@@ -7,7 +7,7 @@ import '../widgets/custom_bottom_nav_bar.dart';
 class SearchResultsScreen extends StatefulWidget {
   final int totalResults;
   final Map<String, dynamic> filters;
-  
+
   const SearchResultsScreen({
     Key? key,
     this.totalResults = 2482,
@@ -104,7 +104,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   children: [
                     // Results List
@@ -131,7 +134,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: _selectedBottomNavIndex,
+        selectedIndex: 1,
         onTap: (index) {
           setState(() => _selectedBottomNavIndex = index);
           _handleBottomNavigation(index);
@@ -187,11 +190,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         splashColor: AppTheme.primaryContainer.withOpacity(0.2),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: Icon(
-            icon,
-            color: AppTheme.primaryContainer,
-            size: 24,
-          ),
+          child: Icon(icon, color: AppTheme.primaryContainer, size: 24),
         ),
       ),
     );
@@ -218,11 +217,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             },
             child: Row(
               children: [
-                Icon(
-                  Icons.sort,
-                  color: AppTheme.onSurfaceVariant,
-                  size: 16,
-                ),
+                Icon(Icons.sort, color: AppTheme.onSurfaceVariant, size: 16),
                 const SizedBox(width: 8),
                 Text(
                   _getSortLabel(),
@@ -249,14 +244,17 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             borderRadius: BorderRadius.circular(24),
             child: InkWell(
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Search saved!')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Search saved!')));
               },
               borderRadius: BorderRadius.circular(24),
               splashColor: AppTheme.primaryContainer.withOpacity(0.2),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Row(
                   children: [
                     Icon(
@@ -465,7 +463,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                           decoration: BoxDecoration(
                             border: Border(
                               left: BorderSide(
-                                color: AppTheme.outlineVariant.withOpacity(0.15),
+                                color: AppTheme.outlineVariant.withOpacity(
+                                  0.15,
+                                ),
                               ),
                             ),
                           ),
@@ -482,7 +482,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                             ? Icons.electric_car
                             : Icons.settings_input_component,
                         label: car.fuelType == 'Electric' ? 'POWER' : 'ENGINE',
-                        value: car.fuelType == 'Electric' ? '637 HP' : car.fuelType,
+                        value: car.fuelType == 'Electric'
+                            ? '637 HP'
+                            : car.fuelType,
                       ),
                     ],
                   ),
@@ -516,11 +518,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         const SizedBox(height: 4),
         Row(
           children: [
-            Icon(
-              icon,
-              color: AppTheme.primaryContainer,
-              size: 14,
-            ),
+            Icon(icon, color: AppTheme.primaryContainer, size: 14),
             const SizedBox(width: 6),
             Text(
               value,
@@ -583,43 +581,37 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   String _formatPrice(int price) {
     return price.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]},',
-        );
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 
   String _formatMonthlyPayment(double price) {
     // Simple calculation: price / 60 months
     int monthly = (price / 60).toInt();
     return monthly.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]},',
-        );
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 
   void _handleBottomNavigation(int index) {
     switch (index) {
-      case 0:
-        // Showroom - already here
-        break;
-      case 1:
-        // Saved
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening saved cars...')),
-        );
-        break;
-      case 2:
-        // Sell
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening sell section...')),
-        );
-        break;
-      case 3:
-        // Profile
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening profile...')),
-        );
-        break;
-    }
+            case 0:
+              Navigator.pushReplacementNamed(context, '/');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/search_filters');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/create_listing');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/messages');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/profile');
+              break;
+          }
   }
 }

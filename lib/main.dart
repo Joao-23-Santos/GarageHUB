@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:garagehub/screens/messages_screen.dart';
 import 'theme/app_theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_filters_screen.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
           }
           return const HomeScreen();
         },
+        '/messages': (context) => const MessagesScreen(),
       },
     );
   }

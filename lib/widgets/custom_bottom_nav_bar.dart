@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -21,32 +23,42 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     final items = [
       _NavItem(icon: Icons.home, label: 'Home'),
       _NavItem(icon: Icons.search, label: 'Search'),
-      _NavItem(icon: Icons.add_circle_outline, label: 'Sell'),
-      _NavItem(icon: Icons.message_outlined, label: 'Messages'),
-      _NavItem(icon: Icons.favorite_outline, label: 'Favorites'),
+      _NavItem(icon: Icons.add_circle, label: 'Sell'),
+      _NavItem(icon: Icons.chat, label: 'Chat'),
+      _NavItem(icon: Icons.person, label: 'Profile'),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surface.withOpacity(0.8),
-        border: const Border(
-          top: BorderSide(
-            color: Colors.white10,
-            width: 1,
-          ),
-        ),
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
       ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(
-              items.length,
-              (index) => _buildNavButton(
-                items[index],
-                index,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppTheme.surfaceContainerLow.withOpacity(0.8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 30,
+                offset: const Offset(0, -10),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(
+                  items.length,
+                  (index) => _buildNavButton(
+                    items[index],
+                    index,
+                  ),
+                ),
               ),
             ),
           ),
@@ -60,46 +72,51 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
     return GestureDetector(
       onTap: () => widget.onTap(index),
-      child: AnimatedContainer(
+      child: AnimatedScale(
+        scale: isSelected ? 1.1 : 1.0,
         duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryContainer : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: isSelected
-              ? [
-            BoxShadow(
-              color: AppTheme.primaryContainer.withOpacity(0.3),
-              blurRadius: 12,
-              spreadRadius: 0,
-            ),
-          ]
-              : [],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              item.icon,
-              size: 24,
-              color: isSelected
-                  ? AppTheme.onPrimaryContainer
-                  : AppTheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              item.label.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          padding: isSelected
+              ? const EdgeInsets.symmetric(horizontal: 20, vertical: 6)
+              : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.primaryContainer : Colors.transparent,
+            borderRadius: isSelected ? BorderRadius.circular(24) : BorderRadius.circular(20),
+            boxShadow: isSelected
+                ? [
+              BoxShadow(
+                color: AppTheme.primaryContainer.withOpacity(0.3),
+                blurRadius: 12,
+                spreadRadius: 0,
+              ),
+            ]
+                : [],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                item.icon,
+                size: 24,
                 color: isSelected
                     ? AppTheme.onPrimaryContainer
                     : AppTheme.onSurfaceVariant,
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                item.label.toUpperCase(),
+                style: GoogleFonts.manrope(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                  color: isSelected
+                      ? AppTheme.onPrimaryContainer
+                      : AppTheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
