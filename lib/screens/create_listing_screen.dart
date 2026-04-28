@@ -55,7 +55,7 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
       backgroundColor: AppTheme.surface,
       appBar: CreateListingTopAppBar(
         onBackPressed: () {
-          Navigator.of(context).pop();
+          Navigator.pushReplacementNamed(context, '/');
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(
@@ -75,7 +75,7 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
               Navigator.pushReplacementNamed(context, '/messages');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/saved');
               break;
           }
         },

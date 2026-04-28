@@ -33,7 +33,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
               Navigator.pushReplacementNamed(context, '/messages');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/saved');
               break;
           }
   }

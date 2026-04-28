@@ -25,7 +25,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       _NavItem(icon: Icons.search, label: 'Search'),
       _NavItem(icon: Icons.add_circle, label: 'Sell'),
       _NavItem(icon: Icons.chat, label: 'Chat'),
-      _NavItem(icon: Icons.person, label: 'Profile'),
+      _NavItem(icon: Icons.favorite, label: 'Favourites'),
     ];
 
     return ClipRRect(

@@ -177,7 +177,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
               Navigator.pushReplacementNamed(context, '/messages');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/saved');
               break;
           }
 
@@ -195,7 +195,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: AppTheme.primaryContainer),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => Navigator.pushReplacementNamed(context, '/'),
       ),
       title: Text(
         'Search Filters',

@@ -113,7 +113,7 @@ class _SavedScreenState extends State<SavedScreen> {
               Navigator.pushReplacementNamed(context, '/messages');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/saved');
               break;
           }
         },

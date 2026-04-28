@@ -610,7 +610,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               Navigator.pushReplacementNamed(context, '/messages');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/saved');
               break;
           }
   }

@@ -91,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onSettingsPressed: _handleSettings,
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 4, // No item selected for profile
+        selectedIndex: -1, // No item selected for profile
         onTap: (index) {
           switch (index) {
             case 0:

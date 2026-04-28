@@ -23,12 +23,7 @@ class TopAppBar extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.menu, color: AppTheme.onSurfaceVariant),
-                    onPressed: onMenuPressed,
-                    tooltip: 'Menu',
-                  ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 8),
                   Text(
                     'GARAGEHUB',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -40,10 +35,25 @@ class TopAppBar extends StatelessWidget {
                   ),
                 ],
               ),
-              IconButton(
-                icon: const Icon(Icons.person, color: AppTheme.onSurfaceVariant),
-                onPressed: onProfilePressed,
-                tooltip: 'Profile',
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: onMenuPressed,
+                    icon: const Icon(
+                      Icons.flag,
+                      color: AppTheme.onSurfaceVariant,
+                    ),
+                    tooltip: 'Language',
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.person,
+                      color: AppTheme.onSurfaceVariant,
+                    ),
+                    onPressed: onProfilePressed,
+                    tooltip: 'Profile',
+                  ),
+                ],
               ),
             ],
           ),

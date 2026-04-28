@@ -162,9 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ).showSnackBar(const SnackBar(content: Text('Menu opened')));
           },
           onProfilePressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const ProfileScreen()),
-            );
+            Navigator.pushReplacementNamed(context, '/login');
           },
         ),
       ),
@@ -357,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.pushReplacementNamed(context, '/messages');
               break;
             case 4:
-              Navigator.pushReplacementNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/saved');
               break;
           }
           setState(() {

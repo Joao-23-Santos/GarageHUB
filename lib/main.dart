@@ -8,6 +8,7 @@ import 'screens/listing_details_screen.dart';
 import 'screens/saved_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/create_listing_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       home: const HomeScreen(),
       routes: {
+        '/login': (context) => const LoginScreen(),
         '/create_listing': (context) => const CreateListingScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/saved': (context) => const SavedScreen(),
