@@ -63,10 +63,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _handleSettings() {
-    // Handle settings action
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Settings tapped')),
-    );
+    // Navigate to Settings screen
+    Navigator.pushNamed(context, '/settings');
   }
 
   void _handleViewAll() {

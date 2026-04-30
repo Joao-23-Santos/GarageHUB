@@ -162,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ).showSnackBar(const SnackBar(content: Text('Menu opened')));
           },
           onProfilePressed: () {
-            Navigator.pushReplacementNamed(context, '/login');
+            Navigator.pushReplacementNamed(context, '/profile');
           },
         ),
       ),
