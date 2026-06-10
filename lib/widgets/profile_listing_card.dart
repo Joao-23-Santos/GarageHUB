@@ -8,12 +8,12 @@ class ProfileListingCard extends StatelessWidget {
   final String price;
 
   const ProfileListingCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     required this.subtitle,
     required this.price,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

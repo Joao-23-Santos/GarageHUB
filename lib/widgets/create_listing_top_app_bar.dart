@@ -5,9 +5,9 @@ class CreateListingTopAppBar extends StatelessWidget implements PreferredSizeWid
   final VoidCallback onBackPressed;
 
   const CreateListingTopAppBar({
-    Key? key,
+    super.key,
     required this.onBackPressed,
-  }) : super(key: key);
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

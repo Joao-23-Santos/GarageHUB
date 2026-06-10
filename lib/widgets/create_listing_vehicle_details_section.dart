@@ -5,9 +5,9 @@ class CreateListingVehicleDetailsSection extends StatefulWidget {
   final Function(Map<String, dynamic>) onDetailsChanged;
 
   const CreateListingVehicleDetailsSection({
-    Key? key,
+    super.key,
     required this.onDetailsChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<CreateListingVehicleDetailsSection> createState() => _CreateListingVehicleDetailsSectionState();

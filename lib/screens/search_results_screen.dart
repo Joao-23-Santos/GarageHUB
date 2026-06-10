@@ -9,10 +9,10 @@ class SearchResultsScreen extends StatefulWidget {
   final Map<String, dynamic> filters;
 
   const SearchResultsScreen({
-    Key? key,
+    super.key,
     this.totalResults = 2482,
     required this.filters,
-  }) : super(key: key);
+  });
 
   @override
   State<SearchResultsScreen> createState() => _SearchResultsScreenState();
@@ -20,7 +20,7 @@ class SearchResultsScreen extends StatefulWidget {
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   int _selectedBottomNavIndex = 0;
-  String _selectedSort = 'price_high';
+  final String _selectedSort = 'price_high';
   bool _isSortDropdownOpen = false;
 
   final List<Car> searchResults = [
@@ -74,7 +74,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     ),
   ];
 
-  Map<String, bool> _favorites = {};
+  final Map<String, bool> _favorites = {};
 
   @override
   void initState() {

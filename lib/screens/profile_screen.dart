@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
 
   void _handleBack() {
-    Navigator.of(context).pop();
+    Navigator.pushNamed(context, "/");
   }
 
   void _handleSettings() {

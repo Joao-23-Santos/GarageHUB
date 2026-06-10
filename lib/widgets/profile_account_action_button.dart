@@ -8,12 +8,12 @@ class ProfileAccountActionButton extends StatelessWidget {
   final bool isDestructive;
 
   const ProfileAccountActionButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.onPressed,
     this.isDestructive = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

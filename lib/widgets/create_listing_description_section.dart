@@ -5,9 +5,9 @@ class CreateListingDescriptionSection extends StatefulWidget {
   final Function(String) onDescriptionChanged;
 
   const CreateListingDescriptionSection({
-    Key? key,
+    super.key,
     required this.onDescriptionChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<CreateListingDescriptionSection> createState() => _CreateListingDescriptionSectionState();

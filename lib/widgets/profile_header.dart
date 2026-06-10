@@ -8,12 +8,12 @@ class ProfileHeader extends StatelessWidget {
   final String memberSince;
 
   const ProfileHeader({
-    Key? key,
+    super.key,
     required this.avatarUrl,
     required this.name,
     required this.location,
     required this.memberSince,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

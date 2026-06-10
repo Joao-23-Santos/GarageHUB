@@ -7,10 +7,10 @@ class RecommendationCard extends StatefulWidget {
   final VoidCallback onTap;
 
   const RecommendationCard({
-    Key? key,
+    super.key,
     required this.car,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<RecommendationCard> createState() => _RecommendationCardState();

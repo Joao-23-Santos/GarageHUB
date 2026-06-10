@@ -12,7 +12,7 @@ class ConversationItem extends StatelessWidget {
   final bool isUnread;
 
   const ConversationItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.time,
     required this.carModel,
@@ -20,7 +20,7 @@ class ConversationItem extends StatelessWidget {
     required this.avatarUrl,
     required this.carImageUrl,
     this.isUnread = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

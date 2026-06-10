@@ -7,11 +7,11 @@ class ProfileStatisticsBar extends StatelessWidget {
   final int followers;
 
   const ProfileStatisticsBar({
-    Key? key,
+    super.key,
     required this.activeListings,
     required this.rating,
     required this.followers,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

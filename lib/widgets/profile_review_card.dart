@@ -10,14 +10,14 @@ class ProfileReviewCard extends StatelessWidget {
   final bool isHighlighted;
 
   const ProfileReviewCard({
-    Key? key,
+    super.key,
     required this.reviewerInitials,
     required this.reviewerName,
     required this.purchaseInfo,
     required this.rating,
     required this.reviewText,
     this.isHighlighted = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

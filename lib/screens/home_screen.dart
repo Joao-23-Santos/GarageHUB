@@ -14,7 +14,7 @@ import 'profile_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,12 +22,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedBottomNavIndex = 0;
+  String _selectedLanguage = 'en';
 
   // Search filter state
-  String _selectedBrand = 'All Brands';
-  String _selectedModel = 'Any Model';
-  String _selectedYearRange = '2020 - 2024';
-  String _selectedPriceRange = '\$50k - \$100k';
+  final String _selectedBrand = 'All Brands';
+  final String _selectedModel = 'Any Model';
+  final String _selectedYearRange = '2020 - 2024';
+  final String _selectedPriceRange = '\$50k - \$100k';
 
   final List<String> _brandOptions = [
     'All Brands',
@@ -156,6 +157,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: TopAppBar(
+          selectedLanguage: _selectedLanguage,
+          onLanguageChanged: (language) {
+            setState(() {
+              _selectedLanguage = language;
+            });
+          },
           onMenuPressed: () {
             ScaffoldMessenger.of(
               context,

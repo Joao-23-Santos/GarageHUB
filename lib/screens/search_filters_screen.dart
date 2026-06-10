@@ -4,7 +4,7 @@ import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
 class SearchFiltersScreen extends StatefulWidget {
-  const SearchFiltersScreen({Key? key}) : super(key: key);
+  const SearchFiltersScreen({super.key});
 
   @override
   State<SearchFiltersScreen> createState() => _SearchFiltersScreenState();
@@ -27,10 +27,10 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
     'Heated Leather Seats': false,
     'Adaptive Cruise Control': true,
   };
-  TextEditingController _minYearController = TextEditingController(
+  final TextEditingController _minYearController = TextEditingController(
     text: '2020',
   );
-  TextEditingController _maxYearController = TextEditingController(
+  final TextEditingController _maxYearController = TextEditingController(
     text: '2024',
   );
 
@@ -601,7 +601,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.5,
                   color: isSelected
-                      ? AppTheme.primaryContainer
+                      ? AppTheme.background
                       : AppTheme.onSurfaceVariant,
                 ),
               );
@@ -937,7 +937,7 @@ class _SearchFiltersScreenState extends State<SearchFiltersScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Show 242 Results',
+                'Show Results',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppTheme.onPrimaryContainer,
                   fontWeight: FontWeight.w800,

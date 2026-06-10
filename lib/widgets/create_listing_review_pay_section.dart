@@ -5,9 +5,9 @@ class CreateListingReviewPaySection extends StatefulWidget {
   final VoidCallback onPublish;
 
   const CreateListingReviewPaySection({
-    Key? key,
+    super.key,
     required this.onPublish,
-  }) : super(key: key);
+  });
 
   @override
   State<CreateListingReviewPaySection> createState() => _CreateListingReviewPaySectionState();

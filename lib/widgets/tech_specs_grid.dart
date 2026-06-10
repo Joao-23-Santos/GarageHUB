@@ -6,10 +6,10 @@ class TechSpecsGrid extends StatelessWidget {
   final int crossAxisCount;
 
   const TechSpecsGrid({
-    Key? key,
+    super.key,
     required this.specs,
     this.crossAxisCount = 2,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,11 +73,11 @@ class QuickSpecsBar extends StatelessWidget {
   final String engine;
 
   const QuickSpecsBar({
-    Key? key,
+    super.key,
     required this.mileage,
     required this.drivetrain,
     required this.engine,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -10,9 +10,9 @@ class ListingDetailsScreen extends StatefulWidget {
   final Car car;
 
   const ListingDetailsScreen({
-    Key? key,
+    super.key,
     required this.car,
-  }) : super(key: key);
+  });
 
   @override
   State<ListingDetailsScreen> createState() => _ListingDetailsScreenState();

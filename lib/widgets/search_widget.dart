@@ -5,9 +5,9 @@ class SearchWidget extends StatefulWidget {
   final VoidCallback onSearch;
 
   const SearchWidget({
-    Key? key,
+    super.key,
     required this.onSearch,
-  }) : super(key: key);
+  });
 
   @override
   State<SearchWidget> createState() => _SearchWidgetState();

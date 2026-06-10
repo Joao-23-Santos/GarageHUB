@@ -7,11 +7,11 @@ class CreateListingPhotosSection extends StatelessWidget {
   final VoidCallback onAddImage2;
 
   const CreateListingPhotosSection({
-    Key? key,
+    super.key,
     required this.onMainImageTap,
     required this.onAddImage1,
     required this.onAddImage2,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

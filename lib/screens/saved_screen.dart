@@ -90,10 +90,10 @@ class _SavedScreenState extends State<SavedScreen> {
       backgroundColor: AppTheme.surface,
       appBar: SavedTopAppBar(
         onMenuPressed: () {
-          // Handle menu action
+          Navigator.pushReplacementNamed(context, '/');
         },
         onProfilePressed: () {
-          // Handle profile action
+          Navigator.pushReplacementNamed(context, '/profile');
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(

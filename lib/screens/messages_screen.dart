@@ -5,7 +5,7 @@ import '../widgets/custom_bottom_nav_bar.dart';
 import '../widgets/conversation_item.dart';
 
 class MessagesScreen extends StatefulWidget {
-  const MessagesScreen({Key? key}) : super(key: key);
+  const MessagesScreen({super.key});
 
   @override
   State<MessagesScreen> createState() => _MessagesScreenState();
@@ -46,8 +46,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.menu, color: AppTheme.primaryContainer),
-          onPressed: () {},
+          icon: Icon(Icons.arrow_back, color: AppTheme.primaryContainer),
+          onPressed: () {Navigator.pushReplacementNamed(context, '/');},
         ),
         title: Text(
           'Messages',
@@ -58,12 +58,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
             letterSpacing: -0.5,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert, color: AppTheme.primaryContainer),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -171,11 +165,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
         onPressed: () {},
         backgroundColor: AppTheme.primaryContainer,
         foregroundColor: AppTheme.onPrimaryContainer,
-        child: Icon(Icons.edit_square),
         elevation: 6,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
+        child: Icon(Icons.edit_square),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

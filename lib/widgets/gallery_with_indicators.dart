@@ -6,10 +6,10 @@ class GalleryWithIndicators extends StatefulWidget {
   final String imageAlt;
 
   const GalleryWithIndicators({
-    Key? key,
+    super.key,
     required this.images,
     required this.imageAlt,
-  }) : super(key: key);
+  });
 
   @override
   State<GalleryWithIndicators> createState() => _GalleryWithIndicatorsState();

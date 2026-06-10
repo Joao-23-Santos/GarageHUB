@@ -6,10 +6,10 @@ class ProfileTopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onSettingsPressed;
 
   const ProfileTopAppBar({
-    Key? key,
+    super.key,
     required this.onBackPressed,
     required this.onSettingsPressed,
-  }) : super(key: key);
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

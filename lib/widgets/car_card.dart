@@ -7,10 +7,10 @@ class CarCard extends StatefulWidget {
   final VoidCallback onTap;
 
   const CarCard({
-    Key? key,
+    super.key,
     required this.car,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<CarCard> createState() => _CarCardState();

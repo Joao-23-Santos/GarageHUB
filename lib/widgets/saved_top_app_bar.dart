@@ -6,10 +6,10 @@ class SavedTopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onProfilePressed;
 
   const SavedTopAppBar({
-    Key? key,
+    super.key,
     required this.onMenuPressed,
     required this.onProfilePressed,
-  }) : super(key: key);
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -27,7 +27,7 @@ class SavedTopAppBar extends StatelessWidget implements PreferredSizeWidget {
               GestureDetector(
                 onTap: onMenuPressed,
                 child: const Icon(
-                  Icons.menu,
+                  Icons.arrow_back,
                   color: AppTheme.primaryContainer,
                   size: 24,
                 ),
@@ -44,7 +44,7 @@ class SavedTopAppBar extends StatelessWidget implements PreferredSizeWidget {
               GestureDetector(
                 onTap: onProfilePressed,
                 child: const Icon(
-                  Icons.account_circle,
+                  Icons.person,
                   color: AppTheme.primaryContainer,
                   size: 28,
                 ),

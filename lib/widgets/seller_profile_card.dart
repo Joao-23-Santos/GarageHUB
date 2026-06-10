@@ -8,11 +8,11 @@ class SellerProfileCard extends StatelessWidget {
   final VoidCallback onMessagePressed;
 
   const SellerProfileCard({
-    Key? key,
+    super.key,
     required this.sellerInfo,
     required this.onContactPressed,
     required this.onMessagePressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

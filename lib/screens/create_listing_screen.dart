@@ -15,7 +15,7 @@ class CreateListingScreen extends StatefulWidget {
 }
 
 class _CreateListingScreenState extends State<CreateListingScreen> {
-  late Map<String, dynamic> _listingData = {
+  late final Map<String, dynamic> _listingData = {
     'photos': [],
     'brand': '',
     'model': '',
