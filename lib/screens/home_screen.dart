@@ -7,9 +7,11 @@ import '../widgets/car_card.dart';
 import '../widgets/recommendation_card.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import '../data/sample_listing_data.dart';
+import '../API/supabase_api.dart';
 import 'search_filters_screen.dart';
 import 'search_results_screen.dart';
 import 'listing_details_screen.dart';
+import 'login_screen.dart';
 import 'profile_screen.dart';
 
 
@@ -169,7 +171,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ).showSnackBar(const SnackBar(content: Text('Menu opened')));
           },
           onProfilePressed: () {
-            Navigator.pushReplacementNamed(context, '/profile');
+            if (SupabaseApi.isUserLoggedIn()) {
+              Navigator.pushReplacementNamed(context, '/profile');
+            } else {
+              Navigator.pushReplacementNamed(context, '/login');
+            }
           },
         ),
       ),

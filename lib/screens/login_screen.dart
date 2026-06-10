@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../API/supabase_api.dart';
 import '../theme/app_theme.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,10 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
   final _emailFocus = FocusNode();
+  final _firstNameFocus = FocusNode();
+  final _lastNameFocus = FocusNode();
   final _confirmPasswordFocus = FocusNode();
 
   @override
@@ -28,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _usernameFocus.addListener(() => setState(() {}));
     _passwordFocus.addListener(() => setState(() {}));
     _emailFocus.addListener(() => setState(() {}));
+    _firstNameFocus.addListener(() => setState(() {}));
+    _lastNameFocus.addListener(() => setState(() {}));
     _confirmPasswordFocus.addListener(() => setState(() {}));
   }
 
@@ -36,10 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
     _emailController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _confirmPasswordController.dispose();
     _usernameFocus.dispose();
     _passwordFocus.dispose();
     _emailFocus.dispose();
+    _firstNameFocus.dispose();
+    _lastNameFocus.dispose();
     _confirmPasswordFocus.dispose();
     super.dispose();
   }
@@ -56,18 +68,85 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void _login() {
-    // TODO: Implement login logic
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Login functionality not implemented')),
-    );
+  Future<void> _login() async {
+    final email = _usernameController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor preencha todos os campos.')),
+      );
+      return;
+    }
+
+    try {
+      await SupabaseApi.login(
+        email: email,
+        password: password,
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login realizado com sucesso!')),
+      );
+      Navigator.pushReplacementNamed(context, '/');
+    } catch (error) {
+      if (!mounted) return;
+      final message = error.toString();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao fazer login: $message')),
+      );
+    }
   }
 
-  void _signUp() {
-    // TODO: Implement sign up logic
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Sign up functionality not implemented')),
-    );
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+    if (email.isEmpty ||
+        firstName.isEmpty ||
+        lastName.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor preencha todos os campos.')),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('As passwords não coincidem.')),
+      );
+      return;
+    }
+
+    try {
+      await SupabaseApi.signUp(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Conta criada com sucesso. Verifique o seu email.'),
+        ),
+      );
+      setState(() {
+        _isLogin = true;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      final message = error.toString();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao criar conta: $message')));
+    }
   }
 
   @override
@@ -81,7 +160,10 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 48,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -89,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Column(
                           children: [
                             Text(
-                              'VehicleMarket',
+                              'GarageHUB',
                               style: GoogleFonts.spaceGrotesk(
                                 fontSize: 48,
                                 fontWeight: FontWeight.w900,
@@ -100,12 +182,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 8),
                             Text(
                               'High-Performance Marketplace',
-                              style: GoogleFonts.manrope(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                color: AppTheme.onSurfaceVariant,
-                                letterSpacing: 0.2,
-                              ).copyWith(fontFeatures: [const FontFeature.enable('smcp')]),
+                              style:
+                                  GoogleFonts.manrope(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppTheme.onSurfaceVariant,
+                                    letterSpacing: 0.2,
+                                  ).copyWith(
+                                    fontFeatures: [
+                                      const FontFeature.enable('smcp'),
+                                    ],
+                                  ),
                             ),
                           ],
                         ),
@@ -150,6 +237,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Column(
                                   children: [
                                     if (!_isLogin) ...[
+                                      // First Name
+                                      _buildInputField(
+                                        label: 'First Name',
+                                        controller: _firstNameController,
+                                        placeholder: 'e.g. John',
+                                        focusNode: _firstNameFocus,
+                                      ),
+                                      const SizedBox(height: 24),
+                                      // Last Name
+                                      _buildInputField(
+                                        label: 'Last Name',
+                                        controller: _lastNameController,
+                                        placeholder: 'e.g. Doe',
+                                        focusNode: _lastNameFocus,
+                                      ),
+                                      const SizedBox(height: 24),
                                       // Email for sign up
                                       _buildInputField(
                                         label: 'Email',
@@ -158,15 +261,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         focusNode: _emailFocus,
                                       ),
                                       const SizedBox(height: 24),
+                                    ] else ...[
+                                      // Username or Email (login)
+                                      _buildInputField(
+                                        label: 'Username or Email',
+                                        controller: _usernameController,
+                                        placeholder: 'e.g. driver_01',
+                                        focusNode: _usernameFocus,
+                                      ),
+                                      const SizedBox(height: 24),
                                     ],
-                                    // Username or Email
-                                    _buildInputField(
-                                      label: 'Username or Email',
-                                      controller: _usernameController,
-                                      placeholder: 'e.g. driver_01',
-                                      focusNode: _usernameFocus,
-                                    ),
-                                    const SizedBox(height: 24),
                                     // Password
                                     _buildPasswordField(),
                                     if (!_isLogin) ...[
@@ -191,7 +295,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           backgroundColor: Colors.transparent,
                                           shadowColor: Colors.transparent,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(9999),
+                                            borderRadius: BorderRadius.circular(
+                                              9999,
+                                            ),
                                           ),
                                           padding: EdgeInsets.zero,
                                         ),
@@ -203,10 +309,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 AppTheme.primaryFixedDim,
                                               ],
                                             ),
-                                            borderRadius: BorderRadius.circular(9999),
+                                            borderRadius: BorderRadius.circular(
+                                              9999,
+                                            ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: AppTheme.primaryContainer.withOpacity(0.2),
+                                                color: AppTheme.primaryContainer
+                                                    .withOpacity(0.2),
                                                 blurRadius: 20,
                                                 offset: const Offset(0, 10),
                                               ),
@@ -214,11 +323,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                           alignment: Alignment.center,
                                           child: Text(
-                                            _isLogin ? 'LOGIN' : 'CREATE ACCOUNT',
+                                            _isLogin
+                                                ? 'LOGIN'
+                                                : 'CREATE ACCOUNT',
                                             style: GoogleFonts.spaceGrotesk(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w900,
-                                              color: AppTheme.onPrimaryContainer,
+                                              color:
+                                                  AppTheme.onPrimaryContainer,
                                               letterSpacing: 0.2,
                                             ),
                                           ),
@@ -236,25 +348,39 @@ class _LoginScreenState extends State<LoginScreen> {
                                     children: [
                                       Expanded(
                                         child: Divider(
-                                          color: AppTheme.outlineVariant.withOpacity(0.2),
+                                          color: AppTheme.outlineVariant
+                                              .withOpacity(0.2),
                                           thickness: 1,
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
                                         child: Text(
-                                          _isLogin ? 'New to the platform?' : 'Already have an account?',
-                                          style: GoogleFonts.manrope(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppTheme.onSurfaceVariant,
-                                            letterSpacing: 0.2,
-                                          ).copyWith(fontFeatures: [const FontFeature.enable('smcp')]),
+                                          _isLogin
+                                              ? 'New to the platform?'
+                                              : 'Already have an account?',
+                                          style:
+                                              GoogleFonts.manrope(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w700,
+                                                color:
+                                                    AppTheme.onSurfaceVariant,
+                                                letterSpacing: 0.2,
+                                              ).copyWith(
+                                                fontFeatures: [
+                                                  const FontFeature.enable(
+                                                    'smcp',
+                                                  ),
+                                                ],
+                                              ),
                                         ),
                                       ),
                                       Expanded(
                                         child: Divider(
-                                          color: AppTheme.outlineVariant.withOpacity(0.2),
+                                          color: AppTheme.outlineVariant
+                                              .withOpacity(0.2),
                                           thickness: 1,
                                         ),
                                       ),
@@ -268,11 +394,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       onPressed: _toggleMode,
                                       style: OutlinedButton.styleFrom(
                                         side: BorderSide(
-                                          color: AppTheme.outlineVariant.withOpacity(0.3),
+                                          color: AppTheme.outlineVariant
+                                              .withOpacity(0.3),
                                           width: 1,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(9999),
+                                          borderRadius: BorderRadius.circular(
+                                            9999,
+                                          ),
                                         ),
                                       ),
                                       child: Text(
@@ -308,7 +437,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 // Bottom Navigation Bar
-                _buildBottomNavBar(),
+                CustomBottomNavBar(
+                  selectedIndex: -1,
+                  onTap: (index) {
+                    switch (index) {
+                      case 0:
+                        Navigator.pushReplacementNamed(context, '/');
+                        break;
+                      case 1:
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/search_filters',
+                        );
+                        break;
+                      case 2:
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/create_listing',
+                        );
+                        break;
+                      case 3:
+                        Navigator.pushReplacementNamed(context, '/messages');
+                        break;
+                      case 4:
+                        Navigator.pushReplacementNamed(context, '/saved');
+                        break;
+                    }
+                    setState(() {
+                    });
+                  },
+                ),
               ],
             ),
           ),
@@ -355,9 +513,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(color: AppTheme.onSurface),
                 decoration: InputDecoration(
                   hintText: placeholder,
-                  hintStyle: TextStyle(color: AppTheme.outline.withOpacity(0.5)),
+                  hintStyle: TextStyle(
+                    color: AppTheme.outline.withOpacity(0.5),
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),
@@ -402,7 +565,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   // TODO: Implement forgot password
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Forgot password not implemented')),
+                    const SnackBar(
+                      content: Text('Forgot password not implemented'),
+                    ),
                   );
                 },
                 child: Text(
@@ -433,12 +598,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(color: AppTheme.onSurface),
                 decoration: InputDecoration(
                   hintText: '••••••••',
-                  hintStyle: TextStyle(color: AppTheme.outline.withOpacity(0.5)),
+                  hintStyle: TextStyle(
+                    color: AppTheme.outline.withOpacity(0.5),
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: AppTheme.onSurfaceVariant.withOpacity(0.5),
                     ),
                     onPressed: _togglePasswordVisibility,
@@ -467,9 +639,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () {
         // TODO: Implement links
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$text not implemented')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$text not implemented')));
       },
       child: Text(
         text.toUpperCase(),
@@ -479,98 +651,6 @@ class _LoginScreenState extends State<LoginScreen> {
           color: AppTheme.onSurfaceVariant.withOpacity(0.4),
           letterSpacing: 0.2,
         ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    final items = [
-      _NavItem(icon: Icons.directions_car, label: 'Showroom'),
-      _NavItem(icon: Icons.search, label: 'Search'),
-      _NavItem(icon: Icons.add_circle, label: 'Sell', isSpecial: true),
-      _NavItem(icon: Icons.forum, label: 'Messages'),
-      _NavItem(icon: Icons.person, label: 'Profile'),
-    ];
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceContainer.withOpacity(0.8),
-        border: Border(
-          top: BorderSide(
-            color: AppTheme.outlineVariant.withOpacity(0.1),
-            width: 1,
-          ),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                items.length,
-                (index) => _buildNavItem(items[index], index),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(_NavItem item, int index) {
-    final isSelected = index == 2; // Sell is selected by default in HTML
-
-    return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to respective screens
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${item.label} navigation not implemented')),
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (item.isSpecial)
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryContainer,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.primaryContainer.withOpacity(0.2),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: Icon(
-                item.icon,
-                color: AppTheme.onPrimaryContainer,
-                size: 24,
-              ),
-            )
-          else
-            Icon(
-              item.icon,
-              color: isSelected ? AppTheme.primaryContainer : AppTheme.onSurfaceVariant,
-              size: 24,
-            ),
-          const SizedBox(height: 4),
-          Text(
-            item.label,
-            style: GoogleFonts.manrope(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: isSelected ? AppTheme.primaryContainer : AppTheme.onSurfaceVariant,
-              letterSpacing: -0.01,
-            ),
-          ),
-        ],
       ),
     );
   }

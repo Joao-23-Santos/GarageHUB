@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'VehicleMarket',
+      title: 'GarageHUB',
       theme: AppTheme.darkTheme,
       home: const HomeScreen(),
       routes: {

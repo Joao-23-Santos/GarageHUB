@@ -93,7 +93,7 @@ class _SavedScreenState extends State<SavedScreen> {
           Navigator.pushReplacementNamed(context, '/');
         },
         onProfilePressed: () {
-          Navigator.pushReplacementNamed(context, '/profile');
+          Navigator.pushReplacementNamed(context, '/login');
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(

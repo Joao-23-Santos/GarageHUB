@@ -45,7 +45,7 @@ class CreateListingTopAppBar extends StatelessWidget implements PreferredSizeWid
                 ],
               ),
               const Text(
-                'VEHICLEMARKET',
+                'GARAGEHUB',
                 style: TextStyle(
                   fontFamily: 'Space Grotesk',
                   fontSize: 14,
