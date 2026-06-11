@@ -1,4 +1,4 @@
--- 1. Tabela de Perfis
+-- 1. Tabela de Perfis (Baseada em image_3eeadf.png)
 CREATE TABLE profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     full_name TEXT NOT NULL,
@@ -11,16 +11,16 @@ CREATE TABLE profiles (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 2. Tabela de Seguidores (Para o contador de "Followers")
+-- 2. Tabela de Seguidores (Para o contador de "Followers" em image_3eeb23.png)
 CREATE TABLE follows (
     follower_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
     following_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
     PRIMARY KEY (follower_id, following_id)
 );
 
--- 3. Tabela de Carros (car_model.dart)
+-- 3. Tabela de Carros (Baseada em car_model.dart[cite: 1] e image_3eeb23.png)
 CREATE TABLE cars (
-    id TEXT PRIMARY KEY, -- Mantido TEXT para compatibilidade com o modelo Dart
+    id TEXT PRIMARY KEY, -- Mantido TEXT para compatibilidade com o modelo Dart[cite: 1]
     brand TEXT NOT NULL,
     model TEXT NOT NULL,
     year INT NOT NULL,
@@ -36,14 +36,14 @@ CREATE TABLE cars (
     is_certified BOOLEAN NOT NULL DEFAULT false,
     is_top_deal BOOLEAN NOT NULL DEFAULT false,
     badge TEXT,
-    gallery_images TEXT[], -- Lista de strings para galeria
-    technical_specs JSONB, -- Map para especificações técnicas
+    gallery_images TEXT[], -- Lista de strings para galeria[cite: 1]
+    technical_specs JSONB, -- Map para especificações técnicas[cite: 1]
     seller_description TEXT,
     seller_id UUID REFERENCES profiles(id) ON DELETE CASCADE, -- Dono do anúncio
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 4. Tabela de Avaliações (secção Ratings & Reviews)
+-- 4. Tabela de Avaliações (Para a secção Ratings & Reviews em image_3eeb23.png)
 CREATE TABLE reviews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     seller_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
@@ -54,13 +54,13 @@ CREATE TABLE reviews (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 5. Tabela de Pesquisas Guardadas (saved_search.dart)
+-- 5. Tabela de Pesquisas Guardadas (Baseada em saved_search.dart[cite: 2])
 CREATE TABLE saved_searches (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     listing_count INT NOT NULL DEFAULT 0,
     new_listings_today INT NOT NULL DEFAULT 0,
-    filters JSONB NOT NULL, -- Para guardar o Map de filtros
+    filters JSONB NOT NULL, -- Para guardar o Map de filtros[cite: 2]
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
