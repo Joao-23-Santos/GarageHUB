@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../API/supabase_api.dart';
 import '../widgets/profile_top_app_bar.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_statistics_bar.dart';
@@ -17,46 +18,16 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // Sample data
-  final String avatarUrl =
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDCheLEU2RziFLNZXIy6ynMcju75TW6hgFQD-VWCvawHIkob0lhtJ8X4ZwUVh7xfOCmQabaKZeaTQec5Tr9oG6p2f4vsbr_8Yqw0uttrv4idREfSdKiNsRyeA6BiXiB49uYRQXiB2Vw26dTtL__qiH1ZtbctMLVcWPMFtP4SSR-kgPk2kq7ezgjbRfeah_LsSiJ_EugfDsdvAO6MnwqS78pd0zsaFXhYl-VmJyLQbmmptSfijM5TYIrtTMbUlcsuf9pBihOHnjPRgQ';
+  String avatarUrl =
+      'https://www.gravatar.com/avatar/?d=mp';
+  String displayName = '';
+  String displayLocation = '';
+  String memberSince = '';
+  double rating = 0.0;
+  int followers = 0;
+  List<Map<String, dynamic>> myListings = [];
 
-  final List<Map<String, dynamic>> myListings = [
-    {
-      'imageUrl':
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuBqRiML-zuttzwQ3mkhcnYUOS-41qZgRebR3z8ZQ4t91x6SYDhSmhbtPmli7pcpEzj7Z1JP-m0LLtSzkO6pmnwGJAmw0ZG6Eq0t9X2bfLS3FHP5664vnVWKTJBwr5TQ0LHRnmIBh4_GYLXas8tukEB_zfwwVQ6h-IS9SzBS1zuz_xc_WRttA-T-izIa-TwFzEf2SILzG-MsEV5wXgaBeAblBLFAuURBsuMKy2ipXPgXicPNDhkMfYFf1eAT_D-DNuhfTrKCWHtL2_Q',
-      'title': '2021 BMW M3',
-      'subtitle': 'Competition Package • 12,400 km',
-      'price': '€89,500',
-    },
-    {
-      'imageUrl':
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuDoU7RGKbgfwVj7UJHGpFY2lB0FaLZUVtU_XtoWXOxD-JLUxeQZ5M3euVvgGlUG2tLfL6eEzG4Uq5mkz6bxKIhoPpyfkCdOKsh52jgb2kOk7aYHHy-wbirb5Lp5pnIdRkbCLdQKS441TaZyFPcRGCXHa87VV_VwOIbcjF6Op-SbJ31gz2EEhS3d2DviwzTBMIbF7DPXdHs7oFnAdcbHIOjwW_5iSpQ8BplH-Sf0oC3ELnkjCpedvASEQ0k3pzV5e8tLMu1iIfJxJaQ',
-      'title': '2019 Audi A4',
-      'subtitle': 'S-Line Edition • 45,000 km',
-      'price': '€32,900',
-    },
-  ];
-
-  final List<Map<String, dynamic>> reviews = [
-    {
-      'initials': 'MA',
-      'name': 'Miguel Almeida',
-      'purchase': 'Purchased BMW M2',
-      'rating': 5,
-      'text':
-          'Ricardo was extremely professional. The car was exactly as described and the transaction was smooth.',
-      'highlighted': true,
-    },
-    {
-      'initials': 'SF',
-      'name': 'Sofia Ferreira',
-      'purchase': 'Purchased Mini Cooper',
-      'rating': 4,
-      'text':
-          'Great communication. A bit slow on paperwork but overall a very positive experience.',
-      'highlighted': false,
-    },
-  ];
+  final List<Map<String, dynamic>> reviews = [];
 
   void _handleBack() {
     Navigator.pushNamed(context, "/");
@@ -78,6 +49,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('$action tapped')),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final user = SupabaseApi.getCurrentUser();
+    if (user == null) {
+      // Not logged in — redirect to login
+      if (mounted) Navigator.pushReplacementNamed(context, '/login');
+      return;
+    }
+
+    final profile = await SupabaseApi.fetchProfile(user.id);
+    final listings = await SupabaseApi.fetchListings(user.id);
+    final avgRating = await SupabaseApi.fetchAverageRating(user.id);
+    final followerCount = await SupabaseApi.fetchFollowersCount(user.id);
+
+    setState(() {
+      displayName = profile?['full_name'] ?? profile?['email'] ?? 'User';
+      displayLocation = profile?['location'] ?? '';
+      // Prefer profile.created_at if available
+      if (profile != null && profile['created_at'] != null) {
+        memberSince = 'Member since ${profile['created_at']}';
+      } else {
+        memberSince = '';
+      }
+
+      rating = avgRating;
+      followers = followerCount;
+
+      // Map listings into expected shape for UI, using safe fallbacks
+      myListings = listings.map<Map<String, dynamic>>((l) {
+        String image = '';
+        if (l['image_url'] != null) image = l['image_url'];
+        else if (l['main_image_url'] != null) image = l['main_image_url'];
+        else if (l['images'] is List && l['images'].isNotEmpty) image = l['images'][0];
+
+        final title = l['title'] ?? l['name'] ?? '${l['make'] ?? ''} ${l['model'] ?? ''}'.trim();
+        final subtitle = l['subtitle'] ?? (l['mileage'] != null ? '${l['mileage']} km' : '');
+        final price = l['price'] != null ? l['price'].toString() : '';
+
+        return {
+          'imageUrl': image,
+          'title': title,
+          'subtitle': subtitle,
+          'price': price,
+        };
+      }).toList();
+    });
   }
 
   @override
@@ -116,16 +140,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Profile Header
               ProfileHeader(
                 avatarUrl: avatarUrl,
-                name: 'Ricardo Santos',
-                location: 'Lisboa, Portugal',
-                memberSince: 'Member since Oct 2021',
+                name: displayName.isNotEmpty ? displayName : 'Your Name',
+                location: displayLocation,
+                memberSince: memberSince,
               ),
 
               // Statistics Bar
               ProfileStatisticsBar(
-                activeListings: 12,
-                rating: 4.8,
-                followers: 156,
+                activeListings: myListings.length,
+                rating: rating,
+                followers: followers,
               ),
 
               // My Listings Section
@@ -298,7 +322,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileAccountActionButton(
                         icon: Icons.edit,
                         title: 'Edit Profile',
-                        onPressed: () => _handleAccountAction('Edit Profile'),
+                        onPressed: (
+                          () {
+                            Navigator.pushNamed(context, '/edit_profile');
+                          }
+                        ) ,
                       ),
                       ProfileAccountActionButton(
                         icon: Icons.credit_card,

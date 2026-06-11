@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
@@ -5,12 +7,18 @@ class CreateListingPhotosSection extends StatelessWidget {
   final VoidCallback onMainImageTap;
   final VoidCallback onAddImage1;
   final VoidCallback onAddImage2;
+  final String? mainImage;
+  final String? image1;
+  final String? image2;
 
   const CreateListingPhotosSection({
     super.key,
     required this.onMainImageTap,
     required this.onAddImage1,
     required this.onAddImage2,
+    this.mainImage,
+    this.image1,
+    this.image2,
   });
 
   @override
@@ -65,13 +73,23 @@ class CreateListingPhotosSection extends StatelessWidget {
                     ),
                     child: Stack(
                       children: [
-                        // Background image with opacity
+                        // Background image with opacity (either selected or placeholder)
                         Positioned.fill(
-                          child: Image.network(
-                            'https://lh3.googleusercontent.com/aida-public/AB6AXuATpLqOY00q2ouo9wtkxMp2ts_mnQrlJxjNTQ-bogPHfWQXbis8A79MPtdjkBI8uN9XL8jjvH0gDJpoUL7R7Tk-emUJDWFfI_N1SaQHfxl3xnDM6P7CnJveR7M4NwhR1jm3rQEnPWTGO_7PsprPlHFokN4iwIqTcK_Y2A3J0WU064ht-thHoQlTHU43Iqm3J2sV1m6--9MAaSloOFTorJbJ8pBmbQhmopmdsh7j7NonSFQFvquat7s5JzY1dKxW7SEKQRxebIF-Awc',
-                            fit: BoxFit.cover,
-                            opacity: const AlwaysStoppedAnimation(0.4),
-                          ),
+                          child: Builder(builder: (context) {
+                            final img = mainImage;
+                            if (img != null && img.isNotEmpty) {
+                              if (img.startsWith('http')) {
+                                return Image.network(img, fit: BoxFit.cover, opacity: const AlwaysStoppedAnimation(0.4));
+                              } else {
+                                return Image.file(File(img), fit: BoxFit.cover, opacity: const AlwaysStoppedAnimation(0.4));
+                              }
+                            }
+                            return Image.network(
+                              'https://lh3.googleusercontent.com/aida-public/AB6AXuATpLqOY00q2ouo9wtkxMp2ts_mnQrlJxjNTQ-bogPHfWQXbis8A79MPtdjkBI8uN9XL8jjvH0gDJpoUL7R7Tk-emUJDWFfI_N1SaQHfxl3xnDM6P7CnJveR7M4NwhR1jm3rQEnPWTGO_7PsprPlHFokN4iwIqTcK_Y2A3J0WU064ht-thHoQlTHU43Iqm3J2sV1m6--9MAaSloOFTorJbJ8pBmbQhmopmdsh7j7NonSFQFvquat7s5JzY1dKxW7SEKQRxebIF-Awc',
+                              fit: BoxFit.cover,
+                              opacity: const AlwaysStoppedAnimation(0.4),
+                            );
+                          }),
                         ),
                         // Content overlay
                         Center(
@@ -143,11 +161,13 @@ class CreateListingPhotosSection extends StatelessWidget {
                               width: 1,
                             ),
                           ),
-                          child: const Icon(
-                            Icons.image,
-                            color: AppTheme.onSurfaceVariant,
-                            size: 28,
-                          ),
+                          child: image1 != null && image1!.isNotEmpty
+                              ? (image1!.startsWith('http') ? Image.network(image1!, fit: BoxFit.cover) : Image.file(File(image1!), fit: BoxFit.cover))
+                              : const Icon(
+                                  Icons.image,
+                                  color: AppTheme.onSurfaceVariant,
+                                  size: 28,
+                                ),
                         ),
                       ),
                     ),
@@ -164,11 +184,13 @@ class CreateListingPhotosSection extends StatelessWidget {
                               width: 1,
                             ),
                           ),
-                          child: const Icon(
-                            Icons.image,
-                            color: AppTheme.onSurfaceVariant,
-                            size: 28,
-                          ),
+                          child: image2 != null && image2!.isNotEmpty
+                              ? (image2!.startsWith('http') ? Image.network(image2!, fit: BoxFit.cover) : Image.file(File(image2!), fit: BoxFit.cover))
+                              : const Icon(
+                                  Icons.image,
+                                  color: AppTheme.onSurfaceVariant,
+                                  size: 28,
+                                ),
                         ),
                       ),
                     ),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../API/supabase_api.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../widgets/create_listing_top_app_bar.dart';
 import '../widgets/create_listing_photos_section.dart';
 import '../widgets/create_listing_vehicle_details_section.dart';
@@ -33,6 +36,25 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
     });
   }
 
+  Future<void> _pickImage(int slot) async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+    if (picked == null) return;
+
+    final path = picked.path;
+    setState(() {
+      final photos = List<String>.from(_listingData['photos'] as List);
+      if (slot < photos.length) {
+        photos[slot] = path;
+      } else {
+        // ensure list has enough length
+        while (photos.length <= slot) photos.add('');
+        photos[slot] = path;
+      }
+      _listingData['photos'] = photos;
+    });
+  }
+
   void _handleDescriptionChanged(String description) {
     setState(() {
       _listingData['description'] = description;
@@ -40,13 +62,56 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
   }
 
   void _handlePublish() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Listing published successfully!'),
-        backgroundColor: AppTheme.primaryContainer,
-        duration: Duration(seconds: 2),
-      ),
-    );
+    _publishListing();
+  }
+
+  Future<void> _publishListing() async {
+    // Basic validation
+    if ((_listingData['brand'] ?? '').toString().isEmpty || (_listingData['model'] ?? '').toString().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill brand and model before publishing.')),
+      );
+      return;
+    }
+
+    try {
+      final price = double.tryParse((_listingData['price'] ?? '').toString()) ?? 0.0;
+      final year = int.tryParse((_listingData['year'] ?? '').toString()) ?? 0;
+      final mileage = int.tryParse((_listingData['mileage'] ?? '').toString()) ?? 0;
+
+      await SupabaseApi.createCar(
+        brand: (_listingData['brand'] ?? '').toString(),
+        model: (_listingData['model'] ?? '').toString(),
+        year: year,
+        price: price,
+        priceLabel: (_listingData['price_label'] ?? '').toString(),
+        imageUrl: (_listingData['photos'] is List && (_listingData['photos'] as List).isNotEmpty) ? (_listingData['photos'][0]).toString() : '',
+        imageAlt: (_listingData['image_alt'] ?? '').toString(),
+        mileage: mileage,
+        mileageLabel: (_listingData['mileage_label'] ?? '').toString(),
+        fuelType: (_listingData['fuelType'] ?? 'Petrol').toString(),
+        transmission: (_listingData['transmission'] ?? 'Automatic').toString(),
+        color: (_listingData['color'] ?? '').toString(),
+        isCertified: (_listingData['is_certified'] ?? false) as bool,
+        isTopDeal: (_listingData['is_top_deal'] ?? false) as bool,
+        badge: (_listingData['badge'] ?? '').toString(),
+        galleryImages: (_listingData['photos'] is List) ? List<String>.from(_listingData['photos'] as List) : null,
+        technicalSpecs: (_listingData['technical_specs'] is Map) ? Map<String, dynamic>.from(_listingData['technical_specs'] as Map) : null,
+        sellerDescription: (_listingData['description'] ?? '').toString(),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Listing published successfully!'),
+          backgroundColor: AppTheme.primaryContainer,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error publishing listing: ${e.toString()}')),
+      );
+    }
   }
 
   @override
@@ -88,21 +153,12 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
             children: [
               // Photos Section
               CreateListingPhotosSection(
-                onMainImageTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Main image upload tapped')),
-                  );
-                },
-                onAddImage1: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Add image 1 tapped')),
-                  );
-                },
-                onAddImage2: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Add image 2 tapped')),
-                  );
-                },
+                onMainImageTap: () => _pickImage(0),
+                onAddImage1: () => _pickImage(1),
+                onAddImage2: () => _pickImage(2),
+                mainImage: (_listingData['photos'] is List && (_listingData['photos'] as List).isNotEmpty) ? (_listingData['photos'][0] as String) : null,
+                image1: (_listingData['photos'] is List && (_listingData['photos'] as List).length > 1) ? (_listingData['photos'][1] as String) : null,
+                image2: (_listingData['photos'] is List && (_listingData['photos'] as List).length > 2) ? (_listingData['photos'][2] as String) : null,
               ),
               const SizedBox(height: 48),
 

@@ -10,6 +10,7 @@ import 'screens/profile_screen.dart';
 import 'screens/create_listing_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/edit_profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         },
         '/messages': (context) => const MessagesScreen(),
         '/settings': (context) => const SettingsScreen(),
+        '/edit_profile': (context) => const EditProfileScreen(),
       },
     );
   }

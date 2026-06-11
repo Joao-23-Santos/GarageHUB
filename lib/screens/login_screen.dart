@@ -21,12 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _locationController = TextEditingController();
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
   final _emailFocus = FocusNode();
   final _firstNameFocus = FocusNode();
   final _lastNameFocus = FocusNode();
   final _confirmPasswordFocus = FocusNode();
+  final _locationFocus = FocusNode();
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _firstNameFocus.addListener(() => setState(() {}));
     _lastNameFocus.addListener(() => setState(() {}));
     _confirmPasswordFocus.addListener(() => setState(() {}));
+    _locationFocus.addListener(() => setState(() {}));
   }
 
   @override
@@ -47,12 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _confirmPasswordController.dispose();
+    _locationController.dispose();
     _usernameFocus.dispose();
     _passwordFocus.dispose();
     _emailFocus.dispose();
     _firstNameFocus.dispose();
     _lastNameFocus.dispose();
     _confirmPasswordFocus.dispose();
+    _locationFocus.dispose();
     super.dispose();
   }
 
@@ -103,11 +108,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _emailController.text.trim();
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
+    final location = _locationController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
     if (email.isEmpty ||
         firstName.isEmpty ||
         lastName.isEmpty ||
+        location.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -129,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
         firstName: firstName,
         lastName: lastName,
+        location: location,
       );
 
       if (!mounted) return;
@@ -259,6 +267,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         controller: _emailController,
                                         placeholder: 'e.g. driver@example.com',
                                         focusNode: _emailFocus,
+                                      ),
+                                      const SizedBox(height: 24),
+                                      // Location
+                                      _buildInputField(
+                                        label: 'Location',
+                                        controller: _locationController,
+                                        placeholder: 'e.g. São Paulo',
+                                        focusNode: _locationFocus,
                                       ),
                                       const SizedBox(height: 24),
                                     ] else ...[

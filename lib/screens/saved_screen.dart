@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../API/supabase_api.dart';
 import '../widgets/saved_vehicle_card.dart';
 import '../widgets/saved_search_item.dart';
 import '../widgets/saved_tab_bar.dart';
@@ -93,7 +94,11 @@ class _SavedScreenState extends State<SavedScreen> {
           Navigator.pushReplacementNamed(context, '/');
         },
         onProfilePressed: () {
-          Navigator.pushReplacementNamed(context, '/login');
+          if (SupabaseApi.isUserLoggedIn()) {
+            Navigator.pushReplacementNamed(context, '/profile');
+          } else {
+            Navigator.pushReplacementNamed(context, '/login');
+          }
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(

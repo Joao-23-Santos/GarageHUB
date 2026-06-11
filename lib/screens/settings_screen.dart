@@ -267,7 +267,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             icon: Icons.edit,
             title: 'Edit Profile',
             subtitle: 'Update your personal details and bio',
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, '/edit_profile');
+            },
           ),
           _buildDivider(),
           _buildSettingsItem(
