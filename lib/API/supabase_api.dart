@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:io';
 
 class SupabaseApi {
   // Substitua estes valores pelos do seu projeto Supabase.
@@ -160,6 +161,91 @@ class SupabaseApi {
     }
   }
 
+  /// Fetches all available cars from `cars` table, ordered by creation date (newest first).
+  static Future<List<Map<String, dynamic>>> getAllCars() async {
+    try {
+      final res = await client.from('cars').select().order('created_at', ascending: false);
+      if (res == null) return [];
+      return List<Map<String, dynamic>>.from(res as List);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Search cars using a flexible set of filters.
+  /// Supported filters (example keys):
+  /// - 'brand', 'model' (String, partial match)
+  /// - 'min_price', 'max_price' (num)
+  /// - 'year_min', 'year_max' (int)
+  /// - 'fuelType', 'transmission', 'color' (String, exact)
+  /// - 'mileage_max' (int)
+  /// - 'is_certified', 'is_top_deal' (bool)
+  static Future<List<Map<String, dynamic>>> searchCars(Map<String, dynamic> filters) async {
+    try {
+      var query = client.from('cars').select();
+
+      // Text matches (case-insensitive)
+      if (filters['brand'] != null && filters['brand'].toString().trim().isNotEmpty) {
+        query = query.ilike('brand', '%${filters['brand'].toString().trim()}%');
+      }
+      if (filters['model'] != null && filters['model'].toString().trim().isNotEmpty) {
+        query = query.ilike('model', '%${filters['model'].toString().trim()}%');
+      }
+
+      // Price range
+      if (filters['min_price'] != null) {
+        final min = num.tryParse(filters['min_price'].toString());
+        if (min != null) query = query.gte('price', min);
+      }
+      if (filters['max_price'] != null) {
+        final max = num.tryParse(filters['max_price'].toString());
+        if (max != null) query = query.lte('price', max);
+      }
+
+      // Year range
+      if (filters['year_min'] != null) {
+        final yMin = int.tryParse(filters['year_min'].toString());
+        if (yMin != null) query = query.gte('year', yMin);
+      }
+      if (filters['year_max'] != null) {
+        final yMax = int.tryParse(filters['year_max'].toString());
+        if (yMax != null) query = query.lte('year', yMax);
+      }
+
+      // Exact matches
+      if (filters['fuelType'] != null && filters['fuelType'].toString().isNotEmpty) {
+        query = query.eq('fuel_type', filters['fuelType'].toString());
+      }
+      if (filters['transmission'] != null && filters['transmission'].toString().isNotEmpty) {
+        query = query.eq('transmission', filters['transmission'].toString());
+      }
+      if (filters['color'] != null && filters['color'].toString().isNotEmpty) {
+        query = query.eq('color', filters['color'].toString());
+      }
+
+      // Mileage
+      if (filters['mileage_max'] != null) {
+        final mMax = int.tryParse(filters['mileage_max'].toString());
+        if (mMax != null) query = query.lte('mileage', mMax);
+      }
+
+      // Flags
+      if (filters['is_certified'] != null && filters['is_certified'] is bool) {
+        query = query.eq('is_certified', filters['is_certified'] as bool);
+      }
+      if (filters['is_top_deal'] != null && filters['is_top_deal'] is bool) {
+        query = query.eq('is_top_deal', filters['is_top_deal'] as bool);
+      }
+
+      // final order
+      final res = await query.order('created_at', ascending: false);
+      if (res == null) return [];
+      return List<Map<String, dynamic>>.from(res as List);
+    } catch (e) {
+      return [];
+    }
+  }
+
   /// Calculates average rating for a user from `reviews` table.
   static Future<double> fetchAverageRating(String userId) async {
     try {
@@ -197,6 +283,42 @@ class SupabaseApi {
       return 0;
     } catch (e) {
       return 0;
+    }
+  }
+
+  /// Uploads an image to Supabase storage and returns the public URL.
+  /// Image is stored in bucket 'car_listings' under path 'images/{fileName}'
+  static Future<String> uploadImageToStorage(String localImagePath) async {
+    if (client.auth.currentUser == null) {
+      throw Exception('User must be signed in to upload images to storage.');
+    }
+
+    try {
+      print('[Upload] Starting upload for: $localImagePath');
+      
+      final file = File(localImagePath);
+      if (!file.existsSync()) {
+        throw Exception('Image file not found at path: $localImagePath');
+      }
+      
+      print('[Upload] File exists. Size: ${file.lengthSync()} bytes');
+
+      print('[Upload] Uploading using native File API');
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}_${localImagePath.split('/').last}';
+      final storagePath = 'images/$fileName';
+      
+      print('[Upload] Uploading to path: $storagePath');
+
+      final response = await client.storage.from('car_listings').upload(storagePath, file);
+      print('[Upload] Upload response: $response');
+
+      final publicUrl = client.storage.from('car_listings').getPublicUrl(storagePath);
+      print('[Upload] Public URL: $publicUrl');
+      
+      return publicUrl;
+    } catch (e) {
+      print('[Upload Error] Failed to upload image: ${e.toString()}');
+      throw Exception('Failed to upload image: ${e.toString()}');
     }
   }
 }

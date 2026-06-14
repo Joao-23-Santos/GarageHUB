@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import '../models/car_model.dart';
+import '../API/supabase_api.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
@@ -23,66 +24,87 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   final String _selectedSort = 'price_high';
   bool _isSortDropdownOpen = false;
 
-  final List<Car> searchResults = [
-    Car(
-      id: '1',
-      brand: 'Porsche',
-      year: 2023,
-      model: '911 GT3 RS',
-      color: 'Silver',
-      price: 264900,
-      priceLabel: 'MSRP',
-      imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuB8Hl5WJYD-JM7ZQmKyoDJA_yN3pPpN4HOGF9DK1ZKAw8VbrOgs7C6t9IYwelUtbP5E5YwCM9JrWZ02odGz4GzMOS02XC05mZjuRx_7oKGD3lJW24qX2G-f0R2EQ3gGfyVnrEMauI_XxYDvOfelCFqEMKcZuKCzHHDjnxiSnCwO9SAznXamn3AdM2gzklCnsY4kY2__sqNJF5J4mQRwCSJYKQXqEurarQHKnK83saZ0c8v9BDF3Qeq_8-gbya5SvTRzGPufNifvwCA',
-      imageAlt: 'Side profile of a sleek silver Porsche 911 GT3',
-      mileage: 1240,
-      mileageLabel: '1,240 Mi',
-      fuelType: 'Petrol',
-      transmission: 'PDK',
-    ),
-    Car(
-      id: '2',
-      brand: 'BMW',
-      year: 2024,
-      model: 'M4 Competition',
-      color: 'Dark Grey',
-      price: 94500,
-      priceLabel: 'Market Value',
-      imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuBegBL4xoazUgU13Dswqpcfhiiuug6RA9buTh6yFSrzznrW90RuEZSoIVM5ewlQPLFqeai4JDhV_izHUUeb6NLHo81LjGKycxWXWmf_tc_KxjZxCkJDlHqblqz-dTRZnqRPqhyTe6jCUZrMe3uoqz5Axu-obGEMDwQdjNGIWIDbfxZlZc6j2x_cEuLLrcUc58TATfIJ7phRwIZWSJe3I2KEhphP-zap9FVzjjo6oPByyuYX6D-oV1bCK7fzIcuekwhC90Tr6whGQUE',
-      imageAlt: 'Modern dark grey BMW M4 Competition',
-      mileage: 850,
-      mileageLabel: '850 Mi',
-      fuelType: 'Petrol',
-      transmission: 'AWD',
-    ),
-    Car(
-      id: '3',
-      brand: 'Audi',
-      year: 2023,
-      model: 'RS e-tron GT',
-      color: 'Matte Black',
-      price: 148000,
-      priceLabel: 'Market Value',
-      imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuCp0HgWLuDe7Co6yFjaWQpKd5ckLlIS_H653ILrqBGC8wN53ioR1oejz1BfnU9eJL7Wt1g4fyynjPKLK5kf9VOQH6_Pmy92uIV6X3ZXx_W7kB1SBHB2_EF9AFFJLOW68t9j-RYw9C1Mp0VGE5Qc7QKvY0-9ZPfkjWwz6nfuo28hTIfZAFl_gRXdOMiSNndr6E3-HlX5vHsFcyx2m3qgkrtfOqYur9ZA_-p3XYv8tg2X8_jcbYsGomhcGqsEpgx_lLzhHcLI2E5stA4',
-      imageAlt: 'Matte black Audi RS e-tron GT',
-      mileage: 3420,
-      mileageLabel: '3,420 Mi',
-      fuelType: 'Electric',
-      transmission: 'AWD',
-    ),
-  ];
+  List<Car> _results = [];
+  bool _isLoading = true;
 
   final Map<String, bool> _favorites = {};
 
   @override
   void initState() {
     super.initState();
-    // Initialize favorites
-    for (var car in searchResults) {
-      _favorites[car.id] = false;
+    _fetchResultsFromDb();
+  }
+
+  Future<void> _fetchResultsFromDb() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final raw = await SupabaseApi.searchCars(widget.filters);
+      final mapped = raw.map<Car>((m) {
+        return _mapToCar(Map<String, dynamic>.from(m));
+      }).toList();
+
+      if (mapped.isEmpty) {
+        // No matches: fetch all available cars and show them ordered
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No listings matched your filters. Showing all available listings.')),
+        );
+
+        final allCars = await SupabaseApi.getAllCars();
+        final allMapped = allCars.map<Car>((m) {
+          return _mapToCar(Map<String, dynamic>.from(m));
+        }).toList();
+
+        setState(() {
+          _results = allMapped;
+          _favorites.clear();
+          for (var car in _results) {
+            _favorites[car.id] = false;
+          }
+        });
+      } else {
+        setState(() {
+          _results = mapped;
+          _favorites.clear();
+          for (var car in _results) {
+            _favorites[car.id] = false;
+          }
+        });
+      }
+    } catch (e) {
+      // keep _results empty on error
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  Car _mapToCar(Map<String, dynamic> m) {
+    final mileage = (m['mileage'] is num) ? (m['mileage'] as num).toInt() : int.tryParse((m['mileage'] ?? '').toString()) ?? 0;
+    return Car(
+      id: (m['id'] ?? '').toString(),
+      brand: (m['brand'] ?? '').toString(),
+      year: (m['year'] is num) ? (m['year'] as num).toInt() : int.tryParse((m['year'] ?? '').toString()) ?? 0,
+      model: (m['model'] ?? '').toString(),
+      color: (m['color'] ?? '').toString(),
+      price: (m['price'] is num) ? (m['price'] as num).toDouble() : double.tryParse((m['price'] ?? '').toString()) ?? 0.0,
+      priceLabel: (m['price_label'] ?? '').toString(),
+      imageUrl: (m['image_url'] ?? '').toString(),
+      imageAlt: (m['image_alt'] ?? '').toString(),
+      mileage: mileage,
+      mileageLabel: '${_formatPrice(mileage)}',
+      fuelType: (m['fuel_type'] ?? '').toString(),
+      transmission: (m['transmission'] ?? '').toString(),
+      isCertified: m['is_certified'] == true,
+      isTopDeal: m['is_top_deal'] == true,
+      badge: (m['badge'] != null) ? m['badge'].toString() : null,
+      galleryImages: (m['gallery_images'] is List) ? List<String>.from(m['gallery_images'] as List) : null,
+      technicalSpecs: null,
+      sellerDescription: (m['seller_description'] ?? '').toString(),
+    );
   }
 
   void _toggleFavorite(String carId) {
@@ -111,17 +133,23 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 child: Column(
                   children: [
                     // Results List
-                    Column(
-                      children: List.generate(
-                        searchResults.length,
-                        (index) => Padding(
-                          padding: index < searchResults.length - 1
-                              ? const EdgeInsets.only(bottom: 24)
-                              : EdgeInsets.zero,
-                          child: _buildResultCard(searchResults[index]),
+                    if (_isLoading)
+                      const SizedBox(
+                        height: 200,
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    else
+                      Column(
+                        children: List.generate(
+                          _results.length,
+                          (index) => Padding(
+                            padding: index < _results.length - 1
+                                ? const EdgeInsets.only(bottom: 24)
+                                : EdgeInsets.zero,
+                            child: _buildResultCard(_results[index]),
+                          ),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 32),
                     // Load More Button
                     _buildLoadMoreButton(),

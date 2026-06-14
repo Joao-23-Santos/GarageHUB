@@ -44,9 +44,11 @@ class _SearchWidgetState extends State<SearchWidget> {
   ];
 
   final List<String> prices = [
+    '\$0 - \$25k',
+    '\$25k - \$50k',
     '\$50k - \$100k',
-    '\$100k - \$250k',
-    '\$250k+',
+    '\$25k - \$50k',
+    '\$100k+',
   ];
 
   @override

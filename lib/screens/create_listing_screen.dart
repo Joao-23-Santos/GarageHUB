@@ -74,7 +74,45 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
       return;
     }
 
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 16),
+            Text('Publishing listing...'),
+          ],
+        ),
+      ),
+    );
+
     try {
+      // Upload images to storage and get URLs
+      List<String> uploadedImageUrls = [];
+      if (_listingData['photos'] is List && (_listingData['photos'] as List).isNotEmpty) {
+        for (final photoPath in (_listingData['photos'] as List)) {
+          if (photoPath.toString().isNotEmpty) {
+            try {
+              print('[CreateListing] Uploading photo: $photoPath');
+              final imageUrl = await SupabaseApi.uploadImageToStorage(photoPath.toString());
+              print('[CreateListing] Photo uploaded successfully: $imageUrl');
+              uploadedImageUrls.add(imageUrl);
+            } catch (e) {
+              print('[CreateListing] Error uploading photo: ${e.toString()}');
+              // Show error dialog instead of continuing silently
+              Navigator.pop(context); // Close loading dialog
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error uploading image: ${e.toString()}')),
+              );
+              return;
+            }
+          }
+        }
+      }
+
       final price = double.tryParse((_listingData['price'] ?? '').toString()) ?? 0.0;
       final year = int.tryParse((_listingData['year'] ?? '').toString()) ?? 0;
       final mileage = int.tryParse((_listingData['mileage'] ?? '').toString()) ?? 0;
@@ -85,7 +123,7 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
         year: year,
         price: price,
         priceLabel: (_listingData['price_label'] ?? '').toString(),
-        imageUrl: (_listingData['photos'] is List && (_listingData['photos'] as List).isNotEmpty) ? (_listingData['photos'][0]).toString() : '',
+        imageUrl: uploadedImageUrls.isNotEmpty ? uploadedImageUrls[0] : '',
         imageAlt: (_listingData['image_alt'] ?? '').toString(),
         mileage: mileage,
         mileageLabel: (_listingData['mileage_label'] ?? '').toString(),
@@ -95,10 +133,13 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
         isCertified: (_listingData['is_certified'] ?? false) as bool,
         isTopDeal: (_listingData['is_top_deal'] ?? false) as bool,
         badge: (_listingData['badge'] ?? '').toString(),
-        galleryImages: (_listingData['photos'] is List) ? List<String>.from(_listingData['photos'] as List) : null,
+        galleryImages: uploadedImageUrls.isNotEmpty ? uploadedImageUrls : null,
         technicalSpecs: (_listingData['technical_specs'] is Map) ? Map<String, dynamic>.from(_listingData['technical_specs'] as Map) : null,
         sellerDescription: (_listingData['description'] ?? '').toString(),
       );
+
+      // Close loading dialog
+      Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -107,7 +148,15 @@ class _CreateListingScreenState extends State<CreateListingScreen> {
           duration: Duration(seconds: 2),
         ),
       );
+
+      // Navigate to home after 2 seconds
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushReplacementNamed(context, '/');
+      });
     } catch (e) {
+      // Close loading dialog if still open
+      Navigator.pop(context);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error publishing listing: ${e.toString()}')),
       );

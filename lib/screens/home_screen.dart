@@ -32,34 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final String _selectedYearRange = '2020 - 2024';
   final String _selectedPriceRange = '\$50k - \$100k';
 
-  final List<String> _brandOptions = [
-    'All Brands',
-    'Tesla',
-    'Porsche',
-    'BMW',
-    'Mercedes-Benz',
-  ];
-
-  final List<String> _modelOptions = [
-    'Any Model',
-    'Model S',
-    '911',
-    'M4',
-    'G 63',
-  ];
-
-  final List<String> _yearRanges = [
-    '2020 - 2024',
-    '2018 - 2022',
-    '2015 - 2019',
-  ];
-
-  final List<String> _priceRanges = [
-    '\$50k - \$100k',
-    '\$25k - \$50k',
-    '\$100k+',
-  ];
-
   final List<Car> featuredCars = [
     Car(
       id: '1',
