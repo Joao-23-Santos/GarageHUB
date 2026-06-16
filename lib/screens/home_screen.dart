@@ -89,40 +89,75 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   ];
 
-  final List<RecommendationCar> recommendedCars = [
-    RecommendationCar(
-      id: '1',
-      brand: 'Audi',
-      year: 2021,
-      model: 'R8 V10',
-      price: 142000,
-      description:
-          'One of the last naturally aspirated V10 icons. Immaculate service history, performance exhaust, and carbon fiber appearance package.',
-      imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuBpR45Xz1hRt_hvdgBBXPAFpcYN_tb-hVr79WOfeucJeh_p3szIjPcwk0Z5FKQ4vJAaZzfhHTWBvVGe5cauqsXQTe8O-FTYdv2YMbKfCnu0L79XBl9f56far6fsrPTIZPV2eMOuugqMtFYYXPGptgBoZk7l2b5SIEnTvZqg16bDkjH9mlCkvAgucDi3Jex0H4BiQ-IEr7tcn5dmHkm-VxdWdV03mjyJazDph0TtCwmTh-Z1VIksvJyaGHCF56MW4Y7ff8Lc0q5UrlM',
-      imageAlt:
-          'vibrant red luxury sports car profile view with aggressive lines',
-      specs: {
-        '0-60 MPH': '3.2 Seconds',
-        'Top Speed': '205 MPH',
-        'Condition': 'Mint',
-      },
-    ),
-    RecommendationCar(
-      id: '2',
-      brand: 'Mercedes-Benz',
-      year: 2024,
-      model: 'G 63',
-      price: 186000,
-      description:
-          'The pinnacle of off-road luxury. Hand-built AMG engine, Magno Night Black finish, and bespoke Diamond Stitching interior.',
-      imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuD4iVuqC-m5ObG2wYW_RFumGzAnpUFhGhcuhhFSFVZXmiNFP73XvJC00sYbgkq7shDaUD9iPvHIZQaqdsdCMwVPxaj0Zm5iog19tNUymZTwFAVSrTEV4XnXm_0a94EXo2Kds3XKsw8v8bDTpooY9-AiJ6YSDcn_UubdoiFOzGR7YmNPURFmcagG2Le6a0x8larpCs9MQ5xUY5qWyHWMOG8UAb6khENLXJU_0KUpPQFRJKuaRanx14PpdpqGATlCh5VTiwsfKs0W7SM',
-      imageAlt:
-          'modern luxury suv in dark metallic grey driving on rainy street',
-      specs: {'Power': '577 HP', 'Torque': '627 lb-ft', 'Drive': 'AWD'},
-    ),
-  ];
+  
+
+  // Recommended cars loaded from the backend
+  List<RecommendationCar> _recommendedCars = [];
+  final Map<String, Car> _recommendedCarDetails = {};
+  bool _isLoadingRecommended = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecommendedFromDb();
+  }
+
+  Future<void> _fetchRecommendedFromDb() async {
+    setState(() => _isLoadingRecommended = true);
+    try {
+      final raw = await SupabaseApi.getAllCars();
+      final mapped = raw.map<RecommendationCar>((m) {
+        final map = Map<String, dynamic>.from(m);
+        final car = Car(
+          id: (map['id'] ?? '').toString(),
+          brand: (map['brand'] ?? '').toString(),
+          year: (map['year'] is num) ? (map['year'] as num).toInt() : int.tryParse((map['year'] ?? '').toString()) ?? 0,
+          model: (map['model'] ?? '').toString(),
+          color: (map['color'] ?? 'Unknown').toString(),
+          price: (map['price'] is num) ? (map['price'] as num).toDouble() : double.tryParse((map['price'] ?? '').toString()) ?? 0.0,
+          priceLabel: (map['price_label'] ?? 'N/A').toString(),
+          imageUrl: (map['image_url'] ?? '').toString(),
+          imageAlt: (map['image_alt'] ?? 'Car image').toString(),
+          mileage: (map['mileage'] is num) ? (map['mileage'] as num).toInt() : int.tryParse((map['mileage'] ?? '').toString()) ?? 0,
+          mileageLabel: (map['mileage_label'] ?? 'Unknown').toString(),
+          fuelType: (map['fuel_type'] ?? 'Unknown').toString(),
+          transmission: (map['transmission'] ?? 'Unknown').toString(),
+          isCertified: map['is_certified'] == true,
+          isTopDeal: map['is_top_deal'] == true,
+          badge: map['badge']?.toString(),
+          galleryImages: (map['gallery_images'] is List) ? List<String>.from(map['gallery_images'] as List) : null,
+          technicalSpecs: (map['technical_specs'] is Map)
+              ? Map<String, String>.from((map['technical_specs'] as Map).map((k, v) => MapEntry(k.toString(), v.toString())))
+              : null,
+          sellerDescription: (map['seller_description'] ?? '').toString(),
+        );
+        final recommendation = RecommendationCar(
+          id: car.id,
+          brand: car.brand,
+          year: car.year,
+          model: car.model,
+          price: car.price,
+          description: car.sellerDescription ?? '',
+          imageUrl: car.imageUrl,
+          imageAlt: car.imageAlt,
+          specs: car.technicalSpecs ?? {},
+        );
+        _recommendedCarDetails[car.id] = car;
+        return recommendation;
+      }).toList();
+
+      setState(() {
+        _recommendedCars = mapped;
+      });
+    } catch (e) {
+      // on error keep empty list
+      setState(() {
+        _recommendedCars = [];
+      });
+    } finally {
+      setState(() => _isLoadingRecommended = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -298,27 +333,46 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: recommendedCars.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 24),
-                    itemBuilder: (context, index) {
-                      return RecommendationCard(
-                        car: recommendedCars[index],
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Exploring ${recommendedCars[index].fullName}',
+                  if (_isLoadingRecommended)
+                    const Center(child: CircularProgressIndicator())
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _recommendedCars.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 24),
+                      itemBuilder: (context, index) {
+                        final rc = _recommendedCars[index];
+                        return RecommendationCard(
+                          car: rc,
+                          onTap: () {
+                            final car = _recommendedCarDetails[rc.id] ?? Car(
+                              id: rc.id.isNotEmpty ? rc.id : 'indefinido',
+                              brand: rc.brand.isNotEmpty ? rc.brand : 'Marca indefinida',
+                              year: rc.year,
+                              model: rc.model.isNotEmpty ? rc.model : 'Modelo indefinido',
+                              color: 'Cor indefinida',
+                              price: rc.price,
+                              priceLabel: 'Preço indefinido',
+                              imageUrl: rc.imageUrl.isNotEmpty ? rc.imageUrl : '',
+                              imageAlt: rc.imageAlt.isNotEmpty ? rc.imageAlt : 'Imagem do carro',
+                              mileage: 0,
+                              mileageLabel: 'Quilometragem indefinida',
+                              fuelType: 'Combustível indefinido',
+                              transmission: 'Transmissão indefinida',
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ListingDetailsScreen(car: car),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                            );
+                          },
+                        );
+                      },
+                    ),
                 ],
               ),
             ),

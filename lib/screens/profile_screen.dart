@@ -6,6 +6,8 @@ import '../widgets/profile_header.dart';
 import '../widgets/profile_statistics_bar.dart';
 import '../widgets/profile_listing_card.dart';
 import '../widgets/profile_review_card.dart';
+import '../models/car_model.dart';
+import 'listing_details_screen.dart';
 import '../widgets/profile_account_action_button.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 
@@ -66,7 +68,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     final profile = await SupabaseApi.fetchProfile(user.id);
-    final listings = await SupabaseApi.fetchListings(user.id);
+    var listings = await SupabaseApi.fetchListings(user.id);
+    if (listings.isEmpty) {
+      listings = await SupabaseApi.fetchCarsBySeller(user.id);
+    }
     final avgRating = await SupabaseApi.fetchAverageRating(user.id);
     final followerCount = await SupabaseApi.fetchFollowersCount(user.id);
 
@@ -86,22 +91,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // Map listings into expected shape for UI, using safe fallbacks
       myListings = listings.map<Map<String, dynamic>>((l) {
         String image = '';
-        if (l['image_url'] != null) image = l['image_url'];
-        else if (l['main_image_url'] != null) image = l['main_image_url'];
-        else if (l['images'] is List && l['images'].isNotEmpty) image = l['images'][0];
+        if (l['image_url'] != null) {
+          image = l['image_url'];
+        } else if (l['main_image_url'] != null) {
+          image = l['main_image_url'];
+        } else if (l['images'] is List && l['images'].isNotEmpty) {
+          image = l['images'][0];
+        }
 
-        final title = l['title'] ?? l['name'] ?? '${l['make'] ?? ''} ${l['model'] ?? ''}'.trim();
-        final subtitle = l['subtitle'] ?? (l['mileage'] != null ? '${l['mileage']} km' : '');
-        final price = l['price'] != null ? l['price'].toString() : '';
+        final title =
+            l['title'] ??
+            l['name'] ??
+            '${l['brand'] ?? l['make'] ?? ''} ${l['model'] ?? ''}'.trim();
+        final subtitle = l['subtitle'] ??
+            (l['mileage'] != null
+                ? '${l['mileage']} km'
+                : (l['color'] != null ? l['color'].toString() : ''));
+        final price = l['price'] != null
+            ? '\$${l['price']}'
+            : (l['price_label']?.toString().isNotEmpty == true
+                ? l['price_label'].toString()
+                : '');
 
         return {
           'imageUrl': image,
           'title': title,
           'subtitle': subtitle,
           'price': price,
+          'raw': l,
         };
       }).toList();
     });
+  }
+
+  Car _mapRawListingToCar(Map<String, dynamic> raw) {
+    final mileage = raw['mileage'] is num
+        ? (raw['mileage'] as num).toInt()
+        : int.tryParse((raw['mileage'] ?? '').toString()) ?? 0;
+    final price = raw['price'] is num
+        ? (raw['price'] as num).toDouble()
+        : double.tryParse((raw['price'] ?? '').toString()) ?? 0.0;
+    final imageUrl = (raw['image_url'] ?? raw['main_image_url'] ?? raw['imageUrl'] ?? '').toString();
+    final galleryImages = raw['gallery_images'] is List
+        ? List<String>.from(raw['gallery_images'] as List)
+        : null;
+    final technicalSpecs = raw['technical_specs'] is Map
+        ? Map<String, String>.from((raw['technical_specs'] as Map).map(
+            (key, value) => MapEntry(key.toString(), value?.toString() ?? ''),
+          ))
+        : null;
+    final priceLabel = raw['price_label']?.toString().isNotEmpty == true
+        ? raw['price_label'].toString()
+        : price > 0
+            ? '\$${price.toStringAsFixed(0)}'
+            : '';
+
+    return Car(
+      id: (raw['id'] ?? raw['listing_id'] ?? raw['car_id'] ?? '').toString(),
+      brand: (raw['brand'] ?? raw['make'] ?? raw['manufacturer'] ?? '').toString(),
+      year: raw['year'] is num
+          ? (raw['year'] as num).toInt()
+          : int.tryParse((raw['year'] ?? '').toString()) ?? 0,
+      model: (raw['model'] ?? raw['name'] ?? raw['title'] ?? '').toString(),
+      color: (raw['color'] ?? '').toString(),
+      price: price,
+      priceLabel: priceLabel,
+      imageUrl: imageUrl,
+      imageAlt: (raw['image_alt'] ?? raw['main_image_alt'] ?? '').toString(),
+      mileage: mileage,
+      mileageLabel: raw['mileage_label']?.toString().isNotEmpty == true
+          ? raw['mileage_label'].toString()
+          : (mileage > 0 ? '$mileage km' : ''),
+      fuelType: (raw['fuel_type'] ?? raw['fuel'] ?? '').toString(),
+      transmission: (raw['transmission'] ?? '').toString(),
+      isCertified: raw['is_certified'] == true,
+      isTopDeal: raw['is_top_deal'] == true,
+      badge: raw['badge']?.toString(),
+      galleryImages: galleryImages,
+      technicalSpecs: technicalSpecs,
+      sellerDescription: (raw['seller_description'] ?? raw['description'] ?? '').toString(),
+    );
   }
 
   @override
@@ -217,6 +286,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           title: listing['title'],
                           subtitle: listing['subtitle'],
                           price: listing['price'],
+                          onTap: () {
+                            final raw = listing['raw'] as Map<String, dynamic>?;
+                            if (raw == null) return;
+                            final car = _mapRawListingToCar(raw);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ListingDetailsScreen(car: car),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),

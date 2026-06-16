@@ -73,13 +73,19 @@ class SupabaseApi {
     try {
       // Backwards-compatible: try `listings`, fall back to `cars` table.
       var res = await client.from('listings').select().eq('owner_id', userId).order('created_at', ascending: false);
-      if (res == null) {
+      if (res == null || (res is List && (res as List).isEmpty)) {
         res = await client.from('cars').select().eq('seller_id', userId).order('created_at', ascending: false);
       }
       if (res == null) return [];
       return List<Map<String, dynamic>>.from(res as List);
     } catch (e) {
-      return [];
+      try {
+        final fallback = await client.from('cars').select().eq('seller_id', userId).order('created_at', ascending: false);
+        if (fallback == null) return [];
+        return List<Map<String, dynamic>>.from(fallback as List);
+      } catch (_) {
+        return [];
+      }
     }
   }
 

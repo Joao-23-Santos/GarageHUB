@@ -497,7 +497,7 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: '${widget.car.year} ${widget.car.brand} ',
+                text: '${widget.car.brand} ',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontSize: 36,
                   fontWeight: FontWeight.w900,

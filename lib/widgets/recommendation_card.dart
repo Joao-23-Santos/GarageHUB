@@ -6,11 +6,7 @@ class RecommendationCard extends StatefulWidget {
   final RecommendationCar car;
   final VoidCallback onTap;
 
-  const RecommendationCard({
-    super.key,
-    required this.car,
-    required this.onTap,
-  });
+  const RecommendationCard({super.key, required this.car, required this.onTap});
 
   @override
   State<RecommendationCard> createState() => _RecommendationCardState();
@@ -26,88 +22,87 @@ class _RecommendationCardState extends State<RecommendationCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          color: _isHovered
-              ? AppTheme.surfaceContainerHigh
-              : AppTheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.transparent,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? AppTheme.surfaceContainerHigh
+                : AppTheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.transparent),
           ),
-        ),
-        child: Column(
-          children: [
-            if (isMobile)
-              // Mobile: Stack layout
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
-                    child: Image.network(
-                      widget.car.imageUrl,
-                      height: 200,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 200,
-                          color: AppTheme.surfaceContainerHighest,
-                          child: const Center(
-                            child: Icon(
-                              Icons.directions_car,
-                              color: AppTheme.onSurfaceVariant,
-                              size: 48,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  _buildContent(context),
-                ],
-              )
-            else
-              // Desktop: Row layout
-              Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.33 - 12,
-                    child: AspectRatio(
-                      aspectRatio: 4 / 3,
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          bottomLeft: Radius.circular(12),
-                        ),
-                        child: Image.network(
-                          widget.car.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: AppTheme.surfaceContainerHighest,
-                              child: const Center(
-                                child: Icon(
-                                  Icons.directions_car,
-                                  color: AppTheme.onSurfaceVariant,
-                                  size: 48,
-                                ),
+          child: Column(
+            children: [
+              if (isMobile)
+                // Mobile: Stack layout
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                      child: Image.network(
+                        widget.car.imageUrl,
+                        height: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            color: AppTheme.surfaceContainerHighest,
+                            child: const Center(
+                              child: Icon(
+                                Icons.directions_car,
+                                color: AppTheme.onSurfaceVariant,
+                                size: 48,
                               ),
-                            );
-                          },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    _buildContent(context),
+                  ],
+                )
+              else
+                // Desktop: Row layout
+                Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.33 - 12,
+                      child: AspectRatio(
+                        aspectRatio: 4 / 3,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            bottomLeft: Radius.circular(12),
+                          ),
+                          child: Image.network(
+                            widget.car.imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: AppTheme.surfaceContainerHighest,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.directions_car,
+                                    color: AppTheme.onSurfaceVariant,
+                                    size: 48,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: _buildContent(context),
-                  ),
-                ],
-              ),
-          ],
+                    Expanded(child: _buildContent(context)),
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );

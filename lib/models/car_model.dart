@@ -92,5 +92,5 @@ class RecommendationCar {
     required this.specs,
   });
 
-  String get fullName => '$year $brand $model';
+  String get fullName => '$brand $model';
 }

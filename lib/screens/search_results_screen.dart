@@ -4,6 +4,7 @@ import '../models/car_model.dart';
 import '../API/supabase_api.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
+import 'listing_details_screen.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final int totalResults;
@@ -49,7 +50,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       if (mapped.isEmpty) {
         // No matches: fetch all available cars and show them ordered
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No listings matched your filters. Showing all available listings.')),
+          const SnackBar(
+            content: Text(
+              'No listings matched your filters. Showing all available listings.',
+            ),
+          ),
         );
 
         final allCars = await SupabaseApi.getAllCars();
@@ -83,14 +88,20 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
 
   Car _mapToCar(Map<String, dynamic> m) {
-    final mileage = (m['mileage'] is num) ? (m['mileage'] as num).toInt() : int.tryParse((m['mileage'] ?? '').toString()) ?? 0;
+    final mileage = (m['mileage'] is num)
+        ? (m['mileage'] as num).toInt()
+        : int.tryParse((m['mileage'] ?? '').toString()) ?? 0;
     return Car(
       id: (m['id'] ?? '').toString(),
       brand: (m['brand'] ?? '').toString(),
-      year: (m['year'] is num) ? (m['year'] as num).toInt() : int.tryParse((m['year'] ?? '').toString()) ?? 0,
+      year: (m['year'] is num)
+          ? (m['year'] as num).toInt()
+          : int.tryParse((m['year'] ?? '').toString()) ?? 0,
       model: (m['model'] ?? '').toString(),
       color: (m['color'] ?? '').toString(),
-      price: (m['price'] is num) ? (m['price'] as num).toDouble() : double.tryParse((m['price'] ?? '').toString()) ?? 0.0,
+      price: (m['price'] is num)
+          ? (m['price'] as num).toDouble()
+          : double.tryParse((m['price'] ?? '').toString()) ?? 0.0,
       priceLabel: (m['price_label'] ?? '').toString(),
       imageUrl: (m['image_url'] ?? '').toString(),
       imageAlt: (m['image_alt'] ?? '').toString(),
@@ -101,7 +112,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       isCertified: m['is_certified'] == true,
       isTopDeal: m['is_top_deal'] == true,
       badge: (m['badge'] != null) ? m['badge'].toString() : null,
-      galleryImages: (m['gallery_images'] is List) ? List<String>.from(m['gallery_images'] as List) : null,
+      galleryImages: (m['gallery_images'] is List)
+          ? List<String>.from(m['gallery_images'] as List)
+          : null,
       technicalSpecs: null,
       sellerDescription: (m['seller_description'] ?? '').toString(),
     );
@@ -314,213 +327,217 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   Widget _buildResultCard(Car car) {
     bool isFavorited = _favorites[car.id] ?? false;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ListingDetailsScreen(car: car),
           ),
-        ],
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Image with Favorite Button
-          Stack(
-            children: [
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  car.imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppTheme.surfaceContainer,
-                      child: const Center(
-                        child: Icon(
-                          Icons.directions_car,
-                          color: AppTheme.onSurfaceVariant,
-                          size: 48,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              // Gradient Overlay
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppTheme.surface.withOpacity(0),
-                        AppTheme.surface.withOpacity(0.6),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // Favorite Button
-              Positioned(
-                top: 16,
-                right: 16,
-                child: GestureDetector(
-                  onTap: () => _toggleFavorite(car.id),
-                  child: ClipOval(
-                    child: BackdropFilter(
-                      filter: ui.ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppTheme.surface.withOpacity(0.6),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          isFavorited ? Icons.favorite : Icons.favorite_border,
-                          color: isFavorited
-                              ? AppTheme.primaryContainer
-                              : Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // Car Details
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Image with Favorite Button
+            Stack(
               children: [
-                // Category and Price Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${car.year} ${car.brand} ${car.model.split(' ')[0]}',
-                            style: const TextStyle(
-                              fontFamily: 'Space Grotesk',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.onSurfaceVariant,
-                              letterSpacing: 0.2,
-                            ),
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    car.imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: AppTheme.surfaceContainer,
+                        child: const Center(
+                          child: Icon(
+                            Icons.directions_car,
+                            color: AppTheme.onSurfaceVariant,
+                            size: 48,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            car.model,
-                            style: const TextStyle(
-                              fontFamily: 'Space Grotesk',
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                              letterSpacing: -0.02,
-                            ),
-                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                // Gradient Overlay
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppTheme.surface.withOpacity(0),
+                          AppTheme.surface.withOpacity(0.6),
                         ],
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '\$${_formatPrice(car.price.toInt())}',
-                          style: const TextStyle(
-                            fontFamily: 'Space Grotesk',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: AppTheme.primaryContainer,
-                            letterSpacing: -0.02,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'EST. \$${_formatMonthlyPayment(car.price)}/MO',
-                          style: const TextStyle(
-                            fontFamily: 'Space Grotesk',
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: AppTheme.onSurfaceVariant,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                // Specs Grid
-                Container(
-                  padding: const EdgeInsets.only(top: 16),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: AppTheme.outlineVariant.withOpacity(0.15),
-                      ),
-                    ),
                   ),
-                  child: Row(
-                    children: [
-                      _buildSpecItem(
-                        icon: Icons.speed,
-                        label: 'MILEAGE',
-                        value: car.mileageLabel,
-                      ),
-                      Expanded(
+                ),
+                // Favorite Button
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: GestureDetector(
+                    onTap: () => _toggleFavorite(car.id),
+                    child: ClipOval(
+                      child: BackdropFilter(
+                        filter: ui.ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                         child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                color: AppTheme.outlineVariant.withOpacity(
-                                  0.15,
-                                ),
-                              ),
-                            ),
+                            color: AppTheme.surface.withOpacity(0.6),
+                            shape: BoxShape.circle,
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _buildSpecItem(
-                            icon: Icons.settings_input_component,
-                            label: 'DRIVETRAIN',
-                            value: car.transmission,
+                          child: Icon(
+                            isFavorited
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: isFavorited
+                                ? AppTheme.primaryContainer
+                                : Colors.white,
+                            size: 20,
                           ),
                         ),
                       ),
-                      _buildSpecItem(
-                        icon: car.fuelType == 'Electric'
-                            ? Icons.electric_car
-                            : Icons.settings_input_component,
-                        label: car.fuelType == 'Electric' ? 'POWER' : 'ENGINE',
-                        value: car.fuelType == 'Electric'
-                            ? '637 HP'
-                            : car.fuelType,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            // Car Details
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Category and Price Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 4),
+                            Text(
+                              "${car.brand} ${car.model.split(' ')[0]}",
+                              style: const TextStyle(
+                                fontFamily: 'Space Grotesk',
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: -0.02,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '\$${_formatPrice(car.price.toInt())}',
+                            style: const TextStyle(
+                              fontFamily: 'Space Grotesk',
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.primaryContainer,
+                              letterSpacing: -0.02,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'EST. \$${_formatMonthlyPayment(car.price)}/MO',
+                            style: const TextStyle(
+                              fontFamily: 'Space Grotesk',
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.onSurfaceVariant,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Specs Grid
+                  Container(
+                    padding: const EdgeInsets.only(top: 16),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: AppTheme.outlineVariant.withOpacity(0.15),
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildSpecItem(
+                          icon: Icons.speed,
+                          label: 'MILEAGE',
+                          value: car.mileageLabel,
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                left: BorderSide(
+                                  color: AppTheme.outlineVariant.withOpacity(
+                                    0.15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: _buildSpecItem(
+                              icon: Icons.settings_input_component,
+                              label: 'DRIVETRAIN',
+                              value: car.transmission,
+                            ),
+                          ),
+                        ),
+                        _buildSpecItem(
+                          icon: car.fuelType == 'Electric'
+                              ? Icons.electric_car
+                              : Icons.settings_input_component,
+                          label: car.fuelType == 'Electric'
+                              ? 'POWER'
+                              : 'ENGINE',
+                          value: car.fuelType == 'Electric'
+                              ? '637 HP'
+                              : car.fuelType,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -625,21 +642,21 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   void _handleBottomNavigation(int index) {
     switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, '/');
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, '/search_filters');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, '/create_listing');
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, '/messages');
-              break;
-            case 4:
-              Navigator.pushReplacementNamed(context, '/saved');
-              break;
-          }
+      case 0:
+        Navigator.pushReplacementNamed(context, '/');
+        break;
+      case 1:
+        Navigator.pushReplacementNamed(context, '/search_filters');
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, '/create_listing');
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(context, '/messages');
+        break;
+      case 4:
+        Navigator.pushReplacementNamed(context, '/saved');
+        break;
+    }
   }
 }
